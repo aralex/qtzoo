@@ -6,7 +6,7 @@
 #include <QShadowDataModel.h>
 
 
-class q_Checkbox_Filter_Model : public QSortFilterProxyModel
+class QCheckboxFilterModel : public QSortFilterProxyModel
 {
   protected:
     QShadowDataModel srcModel;
@@ -21,13 +21,13 @@ class q_Checkbox_Filter_Model : public QSortFilterProxyModel
     QMap<QString, bool> strToMap(const QString& str) const;
 
   public:
-    q_Checkbox_Filter_Model(QAbstractItemModel* src_mdl, int visible_col, int id_col, QObject *parent = 0);
+    QCheckboxFilterModel(QAbstractItemModel* src_mdl, int visible_col, int id_col, QObject *parent = 0);
 
     void setPattern(const QString& pat){ Pattern = pat; }
 
     void setShowUnchecked(bool state){ ShowUnchecked = state; }
 
-    void setShowCheckboxes(bool state);
+    void setShowCheckboxes(bool checkable);
 
     void setChecked(int state, const QMap<QString, bool>& vals);
     void resetChecked(int state, const QMap<QString, bool>& vals);

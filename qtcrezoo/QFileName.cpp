@@ -48,18 +48,6 @@ const QFileName &QFileName::operator <<=(const QString &file_name)
 }
 
 
-const BASE_CHAR_TYPE *QFileName::c_str() const
-{
-  const BASE_CHAR_TYPE * p =
-#ifdef UNICODE
-    toStdWString().c_str();
-#else
-    toStdString().c_str();
-#endif // !UNICODE
-  return(p);
-}
-
-
 QFileName QFileName::baseName() const
 {
   return(QFileInfo(*this).baseName());

@@ -3,21 +3,21 @@
 
 #include <QString>
 
-class q_CS_String : public QString
+class QCSString : public QString
 {
   protected:
     QString Separator;
 
   public:
-    q_CS_String();
+    QCSString();
 
-    q_CS_String(const char* s, const QString& separator = ","):
+    QCSString(const char* s, const QString& separator = ","):
       QString(s), Separator(separator){}
 
-    q_CS_String(const QString& s, const QString& separator = ","):
+    QCSString(const QString& s, const QString& separator = ","):
       QString(s), Separator(separator){}
 
-    const q_CS_String& append(const QString& s)
+    const QCSString& append(const QString& s)
     {
       if(size()) QString::append(Separator);
       QString::append(s);

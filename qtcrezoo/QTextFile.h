@@ -6,7 +6,7 @@
 #include <QTextStream>
 
 
-class q_Text_File : public QFile
+class QTextFile : public QFile
 {
     Q_OBJECT
 
@@ -21,7 +21,7 @@ class q_Text_File : public QFile
       Trim_Right
     };
 
-    explicit q_Text_File(const QString &file_name, QObject *parent = 0);
+    explicit QTextFile(const QString &file_name, QObject *parent = 0);
 
     bool read_line(QString& str, qint64 maxlen = 0);
 

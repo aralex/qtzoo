@@ -1,4 +1,5 @@
 TEMPLATE = subdirs
 
 SUBDIRS += \
-    qtcrezoo
+    qtcrezoo \
+    test_chb_filt_model

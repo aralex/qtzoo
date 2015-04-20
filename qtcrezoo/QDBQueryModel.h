@@ -5,7 +5,7 @@
 #include <QtSql/QSqlQuery>
 #include <QSemaphore>
 
-#include "q_column_by_name.h"
+#include "QColumnByName.h"
 
 
 #define c_No_Data           "<нет данных>"
@@ -14,7 +14,7 @@
 extern QSemaphore DB_Sem;
 
 
-class q_DB_Query_Model : public QStandardItemModel, public q_Column_By_Name
+class QDBQueryModel : public QStandardItemModel, public QColumnByName
 {
   Q_OBJECT
 
@@ -37,24 +37,24 @@ class q_DB_Query_Model : public QStandardItemModel, public q_Column_By_Name
     QString Unquote(const QString& str) const;
 
   public:
-    q_DB_Query_Model(const char * SQL = 0, QObject *parent = 0):
+    QDBQueryModel(const char * SQL = 0, QObject *parent = 0):
       QStandardItemModel(parent),
-      q_Column_By_Name(this)
+      QColumnByName(this)
     {
       Set_N_Get(SQL);
     }
 
 
-    q_DB_Query_Model(const QString& SQL, QObject *parent = 0):
+    QDBQueryModel(const QString& SQL, QObject *parent = 0):
       QStandardItemModel(parent),
-      q_Column_By_Name(this)
+      QColumnByName(this)
     {
       Set_N_Get(SQL);
     }
 
-    q_DB_Query_Model(const QString& SQL, bool Do_Get_Data, QObject *parent = 0):
+    QDBQueryModel(const QString& SQL, bool Do_Get_Data, QObject *parent = 0):
       QStandardItemModel(parent),
-      q_Column_By_Name(this)
+      QColumnByName(this)
     {
       if(SQL.size()) Query_Str = SQL;
       if(Do_Get_Data) getData();

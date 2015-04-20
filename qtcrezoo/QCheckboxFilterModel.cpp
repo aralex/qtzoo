@@ -1,12 +1,12 @@
-#include "q_Checkbox_Filter_Model.h"
-#include "q_cs_string.h"
+#include "QCheckboxFilterModel.h"
+#include "QCSString.h"
 
 #include <QDebug>
 
 
-bool q_Checkbox_Filter_Model::filterAcceptsRow(int source_row, const QModelIndex &ind) const
+bool QCheckboxFilterModel::filterAcceptsRow(int source_row, const QModelIndex &ind) const
 {
-  //qDebug() << "q_Checkbox_Filter_Model::filterAcceptsRow";
+  //qDebug() << "QCheckboxFilterModel::filterAcceptsRow";
 
   if((source_row >= srcModel.rowCount()) || (source_row < 0)) return false;
 
@@ -23,7 +23,7 @@ bool q_Checkbox_Filter_Model::filterAcceptsRow(int source_row, const QModelIndex
 }
 
 
-QMap<QString, bool> q_Checkbox_Filter_Model::strToMap(const QString &str) const
+QMap<QString, bool> QCheckboxFilterModel::strToMap(const QString &str) const
 {
   QStringList Checked_Ids = str.split(QRegExp("\\s*,\\s*"), QString::SkipEmptyParts);
   QMap<QString, bool> ids;
@@ -35,7 +35,7 @@ QMap<QString, bool> q_Checkbox_Filter_Model::strToMap(const QString &str) const
 }
 
 
-q_Checkbox_Filter_Model::q_Checkbox_Filter_Model(QAbstractItemModel *src_mdl, int visible_col, int id_col, QObject *parent):
+QCheckboxFilterModel::QCheckboxFilterModel(QAbstractItemModel *src_mdl, int visible_col, int id_col, QObject *parent):
   QSortFilterProxyModel(parent),
   srcModel(src_mdl, visible_col, id_col, parent),
   ShowUnchecked(true),
@@ -47,21 +47,22 @@ q_Checkbox_Filter_Model::q_Checkbox_Filter_Model(QAbstractItemModel *src_mdl, in
 }
 
 
-void q_Checkbox_Filter_Model::setShowCheckboxes(bool state)
+void QCheckboxFilterModel::setShowCheckboxes(bool checkable)
 {
-  if(ShowCheckboxes == state) return;
+  if(ShowCheckboxes == checkable) return;
 
-  ShowCheckboxes = state;
+  ShowCheckboxes = checkable;
 
   for(int r = 0; r < srcModel.rowCount(); ++r)
   {
     QStandardItem* item = srcModel.item(r, Checkboxed_Column);
-    item->setCheckable(state);
+    item->setCheckable(checkable);
+    if(!checkable) item->setData(QVariant(), Qt::CheckStateRole);
   }
 }
 
 
-void q_Checkbox_Filter_Model::uncheck_all()
+void QCheckboxFilterModel::uncheck_all()
 {
   for(int r = 0; r < srcModel.rowCount(); ++r)
   {
@@ -72,7 +73,7 @@ void q_Checkbox_Filter_Model::uncheck_all()
 }
 
 
-void q_Checkbox_Filter_Model::setShowUncheckedCheckboxes(bool state)
+void QCheckboxFilterModel::setShowUncheckedCheckboxes(bool state)
 {
   ShowUnchecked = state;
   ShowCheckboxes = true;
@@ -85,7 +86,7 @@ void q_Checkbox_Filter_Model::setShowUncheckedCheckboxes(bool state)
 }
 
 
-void q_Checkbox_Filter_Model::hideCheckboxes()
+void QCheckboxFilterModel::hideCheckboxes()
 {
   ShowUnchecked = true;
   ShowCheckboxes = false;
@@ -107,7 +108,7 @@ void q_Checkbox_Filter_Model::hideCheckboxes()
 - все элементы, все с чекбоксами, некоторые помечены;
 - некоторые элементы, с чекбоксами, помечены;
 */
-void q_Checkbox_Filter_Model::setMode(bool checkboxes, bool show_unchecked, const QMap<QString, bool>& vals)
+void QCheckboxFilterModel::setMode(bool checkboxes, bool show_unchecked, const QMap<QString, bool>& vals)
 {
   QString chb = checkboxes? "show": "hide";
   QString unch = show_unchecked? "show": "hide";
@@ -136,14 +137,14 @@ void q_Checkbox_Filter_Model::setMode(bool checkboxes, bool show_unchecked, cons
 }
 
 
-void q_Checkbox_Filter_Model::setMode(bool checkboxes, bool show_unchecked, const QString &vals)
+void QCheckboxFilterModel::setMode(bool checkboxes, bool show_unchecked, const QString &vals)
 {
   QMap<QString, bool> ids = strToMap(vals);
   setMode(checkboxes, show_unchecked, ids);
 }
 
 
-void q_Checkbox_Filter_Model::setMode(bool checkboxes, bool show_unchecked, bool enabled)
+void QCheckboxFilterModel::setMode(bool checkboxes, bool show_unchecked, bool enabled)
 {
   QString chb = checkboxes? "show": "hide";
   QString unch = show_unchecked? "show": "hide";
@@ -170,7 +171,7 @@ void q_Checkbox_Filter_Model::setMode(bool checkboxes, bool show_unchecked, bool
 }
 
 
-void q_Checkbox_Filter_Model::setChecked(int state, const QMap<QString, bool> &vals)
+void QCheckboxFilterModel::setChecked(int state, const QMap<QString, bool> &vals)
 {
   for(int r = 0; r < srcModel.rowCount(); ++r)
   {
@@ -181,7 +182,7 @@ void q_Checkbox_Filter_Model::setChecked(int state, const QMap<QString, bool> &v
 }
 
 
-void q_Checkbox_Filter_Model::resetChecked(int state, const QMap<QString, bool> &vals)
+void QCheckboxFilterModel::resetChecked(int state, const QMap<QString, bool> &vals)
 {
   qDebug() << objectName() << __FUNCTION__ << state << vals;
 
@@ -195,7 +196,7 @@ void q_Checkbox_Filter_Model::resetChecked(int state, const QMap<QString, bool> 
   }
 }
 
-void q_Checkbox_Filter_Model::setChecked(int state, const QString &vals)
+void QCheckboxFilterModel::setChecked(int state, const QString &vals)
 {
   qDebug() << objectName() << __FUNCTION__ << state << vals;
   QMap<QString, bool> ids = strToMap(vals);
@@ -203,14 +204,14 @@ void q_Checkbox_Filter_Model::setChecked(int state, const QString &vals)
 }
 
 
-void q_Checkbox_Filter_Model::resetChecked(int state, const QString &vals)
+void QCheckboxFilterModel::resetChecked(int state, const QString &vals)
 {
   QMap<QString, bool> ids = strToMap(vals);
   resetChecked(state, ids);
 }
 
 
-void q_Checkbox_Filter_Model::setFixed(bool fixed)
+void QCheckboxFilterModel::setFixed(bool fixed)
 {
   for(int r = 0; r < srcModel.rowCount(); ++r)
   {
@@ -220,7 +221,7 @@ void q_Checkbox_Filter_Model::setFixed(bool fixed)
 }
 
 
-void q_Checkbox_Filter_Model::setCheckedAndFixed(int checked, bool fixed, int column, const QString &vals)
+void QCheckboxFilterModel::setCheckedAndFixed(int checked, bool fixed, int column, const QString &vals)
 {
   qDebug() << objectName() << __FUNCTION__ << checked << fixed << column << vals;
 
@@ -239,14 +240,14 @@ void q_Checkbox_Filter_Model::setCheckedAndFixed(int checked, bool fixed, int co
 }
 
 
-void q_Checkbox_Filter_Model::check_all()
+void QCheckboxFilterModel::check_all()
 {
   for(int r = 0; r < srcModel.rowCount(); ++r)
     srcModel.item(r, Checkboxed_Column)->setData(Qt::Checked, Qt::CheckStateRole);
 }
 
 
-void q_Checkbox_Filter_Model::Brush(const QBrush& brush, int column, const QString& val)
+void QCheckboxFilterModel::Brush(const QBrush& brush, int column, const QString& val)
 {
   for(int r = 0; r < srcModel.rowCount(); ++r)
   {
@@ -256,7 +257,7 @@ void q_Checkbox_Filter_Model::Brush(const QBrush& brush, int column, const QStri
 }
 
 
-Qt::CheckState q_Checkbox_Filter_Model::generalCheckState() const
+Qt::CheckState QCheckboxFilterModel::generalCheckState() const
 {
   int nChecked = 0;
   int nPartChecked = 0;
@@ -278,9 +279,9 @@ Qt::CheckState q_Checkbox_Filter_Model::generalCheckState() const
 
 
 // Получаем список помеченных элементов модели.
-QString q_Checkbox_Filter_Model::getCheckedIds(void) const
+QString QCheckboxFilterModel::getCheckedIds(void) const
 {
-  q_CS_String s;
+  QCSString s;
 
   for(int r = 0; r < rowCount(); r++)
   {
@@ -292,9 +293,9 @@ QString q_Checkbox_Filter_Model::getCheckedIds(void) const
 }
 
 
-QString q_Checkbox_Filter_Model::getEnabledCheckedIds() const
+QString QCheckboxFilterModel::getEnabledCheckedIds() const
 {
-  q_CS_String s;
+  QCSString s;
 
   for(int r = 0; r < rowCount(); r++)
   {

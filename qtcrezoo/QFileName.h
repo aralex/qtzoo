@@ -2,7 +2,6 @@
 #define QFILENAME_H
 
 #include <QString>
-#include "newtypes.h"
 
 
 class QFileName : public QString
@@ -19,8 +18,6 @@ class QFileName : public QString
     const QFileName operator <<(const QString &file_name) const;
 
     const QFileName& operator <<=(const QString &file_name);
-
-    const BASE_CHAR_TYPE* c_str(void) const;
 
     QFileName baseName() const;
 

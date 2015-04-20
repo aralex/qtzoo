@@ -1,4 +1,4 @@
-//      q_select_proxy.h
+//      QSelectProxy.h
 //      Прокси-модель для выборки столбцов из оригинальной модели.
 //
 //      Copyright ЗАО "Атлас-Карт", 2012
@@ -18,13 +18,13 @@
 #include <QString>
 #include <QMap>
 
-#include "q_column_by_name.h"
+#include "QColumnByName.h"
 
 
-class q_Select_Proxy : public QAbstractProxyModel, public q_Column_By_Name
+class QSelectProxy : public QAbstractProxyModel, public QColumnByName
 {
   public:
-    explicit q_Select_Proxy(const QString& Visible_Columns, QObject *parent);
+    explicit QSelectProxy(const QString& Visible_Columns, QObject *parent);
 
     virtual void setSourceModel(QAbstractItemModel *sourceModel);
 

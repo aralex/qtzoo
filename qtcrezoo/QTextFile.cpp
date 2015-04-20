@@ -1,22 +1,21 @@
-#include "q_text_file.h"
+#include "QTextFile.h"
 
 
-
-q_Text_File::q_Text_File(const QString &file_name, QObject *parent) :
+QTextFile::QTextFile(const QString &file_name, QObject *parent) :
   QFile(file_name, parent),
   ts(this)
 {
 }
 
 
-bool q_Text_File::read_line(QString &str, qint64 maxlen)
+bool QTextFile::read_line(QString &str, qint64 maxlen)
 {
   str = ts.readLine(maxlen);
   return(!str.isNull());
 }
 
 
-bool q_Text_File::read_nonempty_line(QString &str, qint64 maxlen)
+bool QTextFile::read_nonempty_line(QString &str, qint64 maxlen)
 {
   QString s;
 

@@ -6,27 +6,27 @@
 
 #include <QMessageBox>
 
-#include "q_db_query_model.h"
-#include "q_cs_string.h"
+#include "QDBQueryModel.h"
+#include "QCSString.h"
 
 
 QSemaphore DB_Sem(1);
 
 
-void q_DB_Query_Model::prepare_query(QSqlQuery& query)
+void QDBQueryModel::prepare_query(QSqlQuery& query)
 {
   query.prepare(Query_Str);
 }
 
 
-void q_DB_Query_Model::getData(QString New_Query_Str)
+void QDBQueryModel::getData(QString New_Query_Str)
 {
   Query_Str = New_Query_Str;
   getData();
 }
 
 
-QString q_DB_Query_Model::Get_SP_Name() const
+QString QDBQueryModel::Get_SP_Name() const
 {
   QRegExp pat_exec("EXEC\\sdbo\\.(\\w+)", Qt::CaseInsensitive);
 
@@ -43,7 +43,7 @@ QString q_DB_Query_Model::Get_SP_Name() const
 }
 
 
-void q_DB_Query_Model::Get_Column_Names(const QSqlRecord &rec)
+void QDBQueryModel::Get_Column_Names(const QSqlRecord &rec)
 {
   int columns = rec.count();
 
@@ -59,7 +59,7 @@ void q_DB_Query_Model::Get_Column_Names(const QSqlRecord &rec)
 }
 
 
-QString q_DB_Query_Model::Unquote(const QString &str) const
+QString QDBQueryModel::Unquote(const QString &str) const
 {
   QString s = ((str[0] == '"') && (str[str.size() - 1] == '"'))? str.mid(1, str.size() - 2): str;
   qDebug() << "Unquoted" << s;
@@ -67,7 +67,7 @@ QString q_DB_Query_Model::Unquote(const QString &str) const
 }
 
 
-QVariant q_DB_Query_Model::headerData(int section, Qt::Orientation orientation, int role) const
+QVariant QDBQueryModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
   QVariant res = (orientation == Qt::Vertical)?
      section:
@@ -77,7 +77,7 @@ QVariant q_DB_Query_Model::headerData(int section, Qt::Orientation orientation, 
 }
 
 
-void q_DB_Query_Model::Load(const QString &fname)
+void QDBQueryModel::Load(const QString &fname)
 {
   QFile f(fname);
   if(!f.open(QIODevice::ReadOnly))
@@ -128,7 +128,7 @@ void q_DB_Query_Model::Load(const QString &fname)
 }
 
 
-void q_DB_Query_Model::Save(const QString &fname) const
+void QDBQueryModel::Save(const QString &fname) const
 {
   QFile f(fname);
   if(!f.open(QIODevice::WriteOnly))
@@ -137,7 +137,7 @@ void q_DB_Query_Model::Save(const QString &fname) const
     return;
   }
 
-  q_CS_String s;
+  QCSString s;
 
   for(int col = 0; col < columnCount(); col++)
     s.append(headerData(col, Qt::Horizontal).toString());
@@ -160,11 +160,11 @@ void q_DB_Query_Model::Save(const QString &fname) const
 }
 
 
-void q_DB_Query_Model::getData(void)
+void QDBQueryModel::getData(void)
 {
   int row;
 
-  //qDebug() << "q_DB_Query_Model::getData" << Query_Str;
+  //qDebug() << "QDBQueryModel::getData" << Query_Str;
 
 #ifdef QUERY_RESULT_LOAD
 
@@ -251,8 +251,8 @@ void q_DB_Query_Model::getData(void)
 }
 
 
-void q_DB_Query_Model::update(void)
+void QDBQueryModel::update(void)
 {
-  //qDebug() << "q_DB_Query_Model::update";
+  //qDebug() << "QDBQueryModel::update";
   getData();
 }

@@ -1,4 +1,4 @@
-//      q_select_proxy.cpp
+//      QSelectProxy.cpp
 //      Прокси-модель для выборки столбцов из оригинальной модели.
 //
 //      Copyright ЗАО "Атлас-Карт", 2012
@@ -11,12 +11,12 @@
 #include <QRegExp>
 #include <QDebug>
 
-#include "q_select_proxy.h"
+#include "QSelectProxy.h"
 
 
-q_Select_Proxy::q_Select_Proxy(const QString &Visible_Columns_List, QObject *parent=0):
+QSelectProxy::QSelectProxy(const QString &Visible_Columns_List, QObject *parent=0):
   QAbstractProxyModel(parent),
-  q_Column_By_Name(this)
+  QColumnByName(this)
 {
   QString cols(Visible_Columns_List);
   Visible_Columns = cols.split(QRegExp("\\s*,\\s*"));
@@ -25,7 +25,7 @@ q_Select_Proxy::q_Select_Proxy(const QString &Visible_Columns_List, QObject *par
 }
 
 
-void q_Select_Proxy::setSourceModel(QAbstractItemModel *sourceModel)
+void QSelectProxy::setSourceModel(QAbstractItemModel *sourceModel)
 {
   int Src_Column_Count = sourceModel->columnCount();
   int N_Dest_Col;
@@ -55,27 +55,27 @@ void q_Select_Proxy::setSourceModel(QAbstractItemModel *sourceModel)
 }
 
 
-int q_Select_Proxy::rowCount(const QModelIndex &) const
+int QSelectProxy::rowCount(const QModelIndex &) const
 {
   //qDebug() << "rowCount" << sourceModel()->rowCount();
   return sourceModel()->rowCount();
 }
 
 
-int q_Select_Proxy::columnCount(const QModelIndex &) const
+int QSelectProxy::columnCount(const QModelIndex &) const
 {
   //qDebug() << "columnCount" << Column_Count;
   return Column_Count;
 }
 
 
-QModelIndex q_Select_Proxy::parent(const QModelIndex &) const
+QModelIndex QSelectProxy::parent(const QModelIndex &) const
 {
   return QModelIndex();
 }
 
 
-QModelIndex q_Select_Proxy::index(int row, int column, const QModelIndex &) const
+QModelIndex QSelectProxy::index(int row, int column, const QModelIndex &) const
 {
   //qDebug() << "index " << row << column;
   if(
@@ -87,7 +87,7 @@ QModelIndex q_Select_Proxy::index(int row, int column, const QModelIndex &) cons
 }
 
 
-QModelIndex q_Select_Proxy::mapFromSource(const QModelIndex &sourceIndex) const
+QModelIndex QSelectProxy::mapFromSource(const QModelIndex &sourceIndex) const
 {
   //qDebug() << "mapFromSource " << sourceIndex.row() << sourceIndex.column();
 
@@ -99,7 +99,7 @@ QModelIndex q_Select_Proxy::mapFromSource(const QModelIndex &sourceIndex) const
 }
 
 
-QModelIndex q_Select_Proxy::mapToSource(const QModelIndex &proxyIndex) const
+QModelIndex QSelectProxy::mapToSource(const QModelIndex &proxyIndex) const
 {
   //qDebug() << "mapToSource " << proxyIndex.row() << proxyIndex.column();
 
@@ -111,7 +111,7 @@ QModelIndex q_Select_Proxy::mapToSource(const QModelIndex &proxyIndex) const
 }
 
 
-QVariant q_Select_Proxy::headerData(int section, Qt::Orientation orientation, int role) const
+QVariant QSelectProxy::headerData(int section, Qt::Orientation orientation, int role) const
 {
   if(role == Qt::DisplayRole)
   {
@@ -131,7 +131,7 @@ QVariant q_Select_Proxy::headerData(int section, Qt::Orientation orientation, in
 }
 
 
-bool q_Select_Proxy::setHeaderData(int section, Qt::Orientation orientation, const QVariant &value, int role)
+bool QSelectProxy::setHeaderData(int section, Qt::Orientation orientation, const QVariant &value, int role)
 {
   switch(orientation)
   {
@@ -149,7 +149,7 @@ bool q_Select_Proxy::setHeaderData(int section, Qt::Orientation orientation, con
 }
 
 
-void q_Select_Proxy::sort(int column, Qt::SortOrder order)
+void QSelectProxy::sort(int column, Qt::SortOrder order)
 {
   int orig_column = Orig_Column[column];
   if(orig_column >= 0)
@@ -160,13 +160,13 @@ void q_Select_Proxy::sort(int column, Qt::SortOrder order)
 }
 
 
-void q_Select_Proxy::on_src_model_changed()
+void QSelectProxy::on_src_model_changed()
 {
-  qDebug() << "q_Select_Proxy::on_src_model_changed";
+  qDebug() << "QSelectProxy::on_src_model_changed";
   emit dataChanged(index(0, 0), index(rowCount() - 1, columnCount() - 1));
 }
 
-//QVariant q_Select_Proxy::data(const QModelIndex &proxyIndex, int role) const
+//QVariant QSelectProxy::data(const QModelIndex &proxyIndex, int role) const
 //{
 //  return mapToSource(proxyIndex).data(role);
 //}

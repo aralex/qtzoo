@@ -6,7 +6,7 @@
 #include <QAbstractItemModel>
 
 
-class q_Column_By_Name
+class QColumnByName
 {
   private:
     QMap<QString, int> Column_Number;
@@ -16,7 +16,7 @@ class q_Column_By_Name
     void Set_Column_Number(const QString& col_name, int column);
 
   public:
-    explicit q_Column_By_Name(QAbstractItemModel * mdl);
+    explicit QColumnByName(QAbstractItemModel * mdl);
 
     int Get_Column_Number(const QString& col_name) const;
 

@@ -4,11 +4,11 @@
 #include <QStringList>
 #include <QDebug>
 
-#include "q_dict.h"
-#include "q_text_file.h"
+#include "QDict.h"
+#include "QTextFile.h"
 
 
-q_Dict::q_Dict(const QString &delim, const QString &file_name):
+QDict::QDict(const QString &delim, const QString &file_name):
   Delimeter(delim)
 {
   if(!file_name.isNull())
@@ -16,12 +16,12 @@ q_Dict::q_Dict(const QString &delim, const QString &file_name):
 }
 
 
-void q_Dict::Load(const QString &file_name, const QString& delim)
+void QDict::Load(const QString &file_name, const QString& delim)
 {
   if((Delimeter != delim) && (delim != q_DEFAULT_DELIMETER))
     Delimeter = delim;
 
-  q_Text_File f(file_name);
+  QTextFile f(file_name);
   QString s;
   QStringList pairs;
 
@@ -39,7 +39,7 @@ void q_Dict::Load(const QString &file_name, const QString& delim)
 }
 
 
-void q_Dict::Save(const QString &file_name) const
+void QDict::Save(const QString &file_name) const
 {
   QFile f(file_name);
 
@@ -52,13 +52,4 @@ void q_Dict::Save(const QString &file_name) const
     out << i.key() << " = " << i.value() << "\n";
 
   f.close();
-}
-
-
-void q_Dict::operator +=(const t_Dict &D)
-{
-  for(t_Dict::const_iterator i = D.begin(); i != D.end(); ++i)
-  {
-    (*this)[QString::fromStdWString((*i).first)] = QString::fromStdWString((*i).second);
-  }
 }
