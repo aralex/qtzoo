@@ -121,15 +121,14 @@ void QMirrorModel::recreate()
   setRowCount(rows);
   setColumnCount(columns);
 
-  QVariant v;
-
   for(int r = 0; r < rows; ++r)
     for(int c = 0; c < columns; ++c)
     {
-      v = srcModel->data(srcModel->index(r, c), Qt::DisplayRole);
+      QVariant v = srcModel->index(r, c).data(Qt::DisplayRole);
       setData(index(r, c), v, Qt::DisplayRole);
     }
 
 
+  emit sig_recreated();
   //qDebug() << "QMirrorModel::recreate finished!";
 }

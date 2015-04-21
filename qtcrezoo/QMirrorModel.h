@@ -20,6 +20,7 @@ class QMirrorModel: public QStandardItemModel
     void dub(const QModelIndex &topLeft, const QModelIndex &bottomRight, const QVector<int>& roles);
 
   signals:
+    void sig_recreated(void);
 
   public slots:
     void on_columnsInserted(const QModelIndex & parent, int first, int last);

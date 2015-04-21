@@ -3,6 +3,9 @@
 
 #include "QMirrorModel.h"
 
+/*
+The model stores a value from shadowColumn/DisplayRole in targetColumn/UserRole.
+*/
 
 class QShadowDataModel : public QMirrorModel
 {
@@ -21,6 +24,7 @@ class QShadowDataModel : public QMirrorModel
     explicit QShadowDataModel(QAbstractItemModel* src_mdl, int target_col, int shadow_col, QObject *parent = 0);
 
   signals:
+    void sig_Recreated(void);
 
   public slots:
 
