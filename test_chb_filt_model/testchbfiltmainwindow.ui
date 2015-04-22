@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>675</width>
-    <height>411</height>
+    <width>687</width>
+    <height>502</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -15,35 +15,11 @@
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QGridLayout" name="gridLayout">
-    <item row="0" column="0">
-     <widget class="QPushButton" name="btnLoad">
-      <property name="text">
-       <string>Load</string>
-      </property>
-     </widget>
+    <item row="0" column="0" colspan="2">
+     <widget class="QLineEdit" name="le_regionPattern"/>
     </item>
-    <item row="0" column="1">
-     <widget class="QLineEdit" name="lineEdit"/>
-    </item>
-    <item row="0" column="2">
-     <widget class="QCheckBox" name="chb_1">
-      <property name="text">
-       <string/>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="3">
-     <widget class="QLineEdit" name="lePattern_1"/>
-    </item>
-    <item row="0" column="4">
-     <widget class="QCheckBox" name="chb_2">
-      <property name="text">
-       <string/>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="5">
-     <widget class="QLineEdit" name="lePattern_2"/>
+    <item row="0" column="2" colspan="2">
+     <widget class="QLineEdit" name="le_townPattern"/>
     </item>
     <item row="1" column="0" colspan="2">
      <widget class="QTableView" name="tableView_1">
@@ -59,12 +35,57 @@
       <property name="alternatingRowColors">
        <bool>true</bool>
       </property>
+      <property name="selectionBehavior">
+       <enum>QAbstractItemView::SelectRows</enum>
+      </property>
       <property name="sortingEnabled">
        <bool>true</bool>
       </property>
+      <attribute name="verticalHeaderVisible">
+       <bool>false</bool>
+      </attribute>
      </widget>
     </item>
     <item row="1" column="2" colspan="2">
+     <widget class="QTableView" name="tableView_2">
+      <property name="editTriggers">
+       <set>QAbstractItemView::NoEditTriggers</set>
+      </property>
+      <property name="alternatingRowColors">
+       <bool>true</bool>
+      </property>
+      <property name="selectionBehavior">
+       <enum>QAbstractItemView::SelectRows</enum>
+      </property>
+      <property name="sortingEnabled">
+       <bool>true</bool>
+      </property>
+      <attribute name="verticalHeaderVisible">
+       <bool>false</bool>
+      </attribute>
+     </widget>
+    </item>
+    <item row="2" column="0">
+     <widget class="QCheckBox" name="chb_1">
+      <property name="text">
+       <string/>
+      </property>
+     </widget>
+    </item>
+    <item row="2" column="1">
+     <widget class="QLineEdit" name="lePattern_1"/>
+    </item>
+    <item row="2" column="2">
+     <widget class="QCheckBox" name="chb_2">
+      <property name="text">
+       <string/>
+      </property>
+     </widget>
+    </item>
+    <item row="2" column="3">
+     <widget class="QLineEdit" name="lePattern_2"/>
+    </item>
+    <item row="3" column="0" colspan="2">
      <widget class="QListView" name="lv_1">
       <property name="editTriggers">
        <set>QAbstractItemView::NoEditTriggers</set>
@@ -74,7 +95,7 @@
       </property>
      </widget>
     </item>
-    <item row="1" column="4" colspan="2">
+    <item row="3" column="2" colspan="2">
      <widget class="QListView" name="lv_2">
       <property name="editTriggers">
        <set>QAbstractItemView::NoEditTriggers</set>
@@ -86,25 +107,6 @@
     </item>
    </layout>
   </widget>
-  <widget class="QMenuBar" name="menuBar">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>0</y>
-     <width>675</width>
-     <height>27</height>
-    </rect>
-   </property>
-  </widget>
-  <widget class="QToolBar" name="mainToolBar">
-   <attribute name="toolBarArea">
-    <enum>TopToolBarArea</enum>
-   </attribute>
-   <attribute name="toolBarBreak">
-    <bool>false</bool>
-   </attribute>
-  </widget>
-  <widget class="QStatusBar" name="statusBar"/>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources/>

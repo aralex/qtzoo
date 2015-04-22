@@ -21,7 +21,6 @@ class TestChBFiltMainWindow : public QMainWindow
     ~TestChBFiltMainWindow();
 
   private slots:
-    void on_btnLoad_clicked();
 
     void on_chb_1_toggled(bool checked);
 
@@ -35,10 +34,17 @@ class TestChBFiltMainWindow : public QMainWindow
 
     void on_mdl_2_dataChanged(const QModelIndex & topLeft, const QModelIndex & bottomRight, const QVector<int> & roles = QVector<int>());
 
+    void on_le_regionPattern_textChanged(const QString &arg1);
+
+    void on_le_townPattern_textChanged(const QString &arg1);
+
+    void on_lv_1_selection_changed(const QItemSelection &selected, const QItemSelection &deselected);
+
   private:
     Ui::TestChBFiltMainWindow *ui;
 
-    QStandardItemModel* mdl_orig;
+    QStandardItemModel* mdl_1_orig;
+    QStandardItemModel* mdl_2_orig;
     QCheckboxFilterModel* mdl_1;
     QCheckboxFilterModel* mdl_2;
 

@@ -1,1 +1,6 @@
-<RCC/>
+<RCC>
+    <qresource prefix="/">
+        <file>data/regions.csv</file>
+        <file>data/towns.csv</file>
+    </qresource>
+</RCC>

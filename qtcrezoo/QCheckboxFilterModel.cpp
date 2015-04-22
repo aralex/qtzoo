@@ -401,3 +401,13 @@ void QCheckboxFilterModel::on_srcModel_recreated()
   visibleItems.resize(srcModel.rowCount());
   visibleItems.fill(true);
 }
+
+
+void QCheckboxFilterModel::brush(const QBrush& brush, const QString& val, int column)
+{
+  for(int r = 0; r < srcModel.rowCount(); ++r)
+  {
+    if(srcModel.item(r, column)->data(Qt::DisplayRole) == val)
+      srcModel.item(r, Checkboxed_Column)->setData(brush, Qt::BackgroundRole);
+  }
+}

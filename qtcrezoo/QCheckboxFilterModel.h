@@ -83,6 +83,8 @@ class QCheckboxFilterModel : public QSortFilterProxyModel
 
     void setup(void);
 
+    void brush(const QBrush& brush, const QString& val, int column);
+
   signals:
 
   public slots:
