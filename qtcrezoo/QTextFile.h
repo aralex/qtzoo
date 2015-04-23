@@ -23,9 +23,11 @@ class QTextFile : public QFile
 
     explicit QTextFile(const QString &file_name, QObject *parent = 0);
 
-    bool read_line(QString& str, qint64 maxlen = 0);
+    bool readLine(QString& str, qint64 maxlen = 0);
 
-    bool read_nonempty_line(QString& str, qint64 maxlen = 0);
+    bool readNonemptyLine(QString& str, qint64 maxlen = 0);
+
+    void setCodec(const char * codecName) { ts.setCodec(codecName); }
 
   signals:
 

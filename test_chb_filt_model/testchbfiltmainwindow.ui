@@ -6,87 +6,62 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>687</width>
-    <height>502</height>
+    <width>621</width>
+    <height>586</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>TestChBFiltMainWindow</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <layout class="QGridLayout" name="gridLayout">
+   <layout class="QGridLayout" name="gridLayout" rowstretch="1,1,1,3" columnstretch="0,1,0,2">
     <item row="0" column="0" colspan="2">
-     <widget class="QLineEdit" name="le_regionPattern"/>
+     <widget class="QLineEdit" name="lePatternDiets"/>
     </item>
-    <item row="0" column="2" colspan="2">
-     <widget class="QLineEdit" name="le_townPattern"/>
+    <item row="0" column="2" rowspan="2" colspan="2">
+     <widget class="QTableView" name="tvDietsFull">
+      <property name="editTriggers">
+       <set>QAbstractItemView::NoEditTriggers</set>
+      </property>
+      <property name="alternatingRowColors">
+       <bool>true</bool>
+      </property>
+      <property name="selectionBehavior">
+       <enum>QAbstractItemView::SelectRows</enum>
+      </property>
+      <property name="sortingEnabled">
+       <bool>true</bool>
+      </property>
+      <attribute name="verticalHeaderVisible">
+       <bool>false</bool>
+      </attribute>
+     </widget>
     </item>
     <item row="1" column="0" colspan="2">
-     <widget class="QTableView" name="tableView_1">
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
-      <property name="editTriggers">
-       <set>QAbstractItemView::NoEditTriggers</set>
-      </property>
-      <property name="alternatingRowColors">
-       <bool>true</bool>
-      </property>
-      <property name="selectionBehavior">
-       <enum>QAbstractItemView::SelectRows</enum>
-      </property>
-      <property name="sortingEnabled">
-       <bool>true</bool>
-      </property>
-      <attribute name="verticalHeaderVisible">
-       <bool>false</bool>
-      </attribute>
-     </widget>
-    </item>
-    <item row="1" column="2" colspan="2">
-     <widget class="QTableView" name="tableView_2">
-      <property name="editTriggers">
-       <set>QAbstractItemView::NoEditTriggers</set>
-      </property>
-      <property name="alternatingRowColors">
-       <bool>true</bool>
-      </property>
-      <property name="selectionBehavior">
-       <enum>QAbstractItemView::SelectRows</enum>
-      </property>
-      <property name="sortingEnabled">
-       <bool>true</bool>
-      </property>
-      <attribute name="verticalHeaderVisible">
-       <bool>false</bool>
-      </attribute>
-     </widget>
+     <widget class="QListView" name="lvDiets"/>
     </item>
     <item row="2" column="0">
-     <widget class="QCheckBox" name="chb_1">
+     <widget class="QCheckBox" name="chbProdKinds">
       <property name="text">
        <string/>
       </property>
      </widget>
     </item>
     <item row="2" column="1">
-     <widget class="QLineEdit" name="lePattern_1"/>
+     <widget class="QLineEdit" name="lePatternProdKinds"/>
     </item>
     <item row="2" column="2">
-     <widget class="QCheckBox" name="chb_2">
+     <widget class="QCheckBox" name="chbProducts">
       <property name="text">
        <string/>
       </property>
      </widget>
     </item>
     <item row="2" column="3">
-     <widget class="QLineEdit" name="lePattern_2"/>
+     <widget class="QLineEdit" name="lePatternProducts"/>
     </item>
     <item row="3" column="0" colspan="2">
-     <widget class="QListView" name="lv_1">
+     <widget class="QListView" name="lvProdKinds">
       <property name="editTriggers">
        <set>QAbstractItemView::NoEditTriggers</set>
       </property>
@@ -96,7 +71,7 @@
      </widget>
     </item>
     <item row="3" column="2" colspan="2">
-     <widget class="QListView" name="lv_2">
+     <widget class="QListView" name="lvProducts">
       <property name="editTriggers">
        <set>QAbstractItemView::NoEditTriggers</set>
       </property>

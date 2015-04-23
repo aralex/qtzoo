@@ -45,6 +45,25 @@ QMap<QString, bool> QCheckboxFilterModel::strToMap(const QString &str) const
 }
 
 
+QMap<QString, bool> QCheckboxFilterModel::rangeToMap(const QItemSelection &range, int column) const
+{
+  qDebug() << __FUNCTION__;
+
+  QMap<QString, bool> ids;
+
+  foreach(const QModelIndex& ind, range.indexes())
+    if(ind.column() == column)
+    {
+      QString id_str = ind.data(Qt::DisplayRole).toString();
+      ids[id_str] = true;
+
+      qDebug() << "--" << id_str;
+    }
+
+  return ids;
+}
+
+
 QList<int> QCheckboxFilterModel::strToIntList(const QString &str) const
 {
   QStringList numbers_str = strToList(str);
@@ -364,22 +383,33 @@ void QCheckboxFilterModel::toggleVisibility(bool visible, const QString &vals)
 }
 
 
+void QCheckboxFilterModel::toggleVisibilityReferenced(bool visible, const QMap<QString, bool>& ids, int column)
+{
+  qDebug() << objectName() << __FUNCTION__ << "(bool visible, const QMap<QString, bool>& ids, int column)";
+
+  for(int r = 0; r < srcModel.rowCount(); ++r)
+  {
+    QString n_str = srcModel.item(r, column)->data(Qt::DisplayRole).toString();
+    if(ids[n_str]) visibleItems.setBit(r, visible);
+  }
+}
+
+
 void QCheckboxFilterModel::toggleVisibilityReferenced(bool visible, const QString &vals, int column)
 {
   qDebug() << objectName() << __FUNCTION__ << visible << vals << column;
 
   QMap<QString, bool> ids = strToMap(vals);
-
-  for(int r = 0; r < srcModel.rowCount(); ++r)
-  {
-    QString n_str = srcModel.item(r, column)->data(Qt::DisplayRole).toString();
-
-    if(ids[n_str])
-      visibleItems.setBit(r, visible);
-  }
+  toggleVisibilityReferenced(visible, ids, column);
 }
 
 
+void QCheckboxFilterModel::toggleVisibilityReferenced(bool visible, const QItemSelection &range, int column)
+{
+  QMap<QString, bool> ids = rangeToMap(range, column);
+  qDebug() << objectName() << __FUNCTION__ << "(bool visible, const QItemSelection &range, int column)";
+  toggleVisibilityReferenced(visible, ids, column);
+}
 
 
 void QCheckboxFilterModel::showTheseItemsOnly(const QString &vals)

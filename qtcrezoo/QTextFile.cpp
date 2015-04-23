@@ -5,21 +5,22 @@ QTextFile::QTextFile(const QString &file_name, QObject *parent) :
   QFile(file_name, parent),
   ts(this)
 {
+  ts.setAutoDetectUnicode(true);
 }
 
 
-bool QTextFile::read_line(QString &str, qint64 maxlen)
+bool QTextFile::readLine(QString &str, qint64 maxlen)
 {
   str = ts.readLine(maxlen);
   return(!str.isNull());
 }
 
 
-bool QTextFile::read_nonempty_line(QString &str, qint64 maxlen)
+bool QTextFile::readNonemptyLine(QString &str, qint64 maxlen)
 {
   QString s;
 
-  while(read_line(str, maxlen))
+  while(readLine(str, maxlen))
   {
     s = str.trimmed();
     if(!s.isEmpty() && (s.at(0) != QChar('#')))

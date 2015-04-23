@@ -2,5 +2,8 @@
     <qresource prefix="/">
         <file>data/regions.csv</file>
         <file>data/towns.csv</file>
+        <file>data/diets.csv</file>
+        <file>data/prod-kinds.csv</file>
+        <file>data/products.csv</file>
     </qresource>
 </RCC>

@@ -8,7 +8,9 @@ void LoadCsvData(QStandardItemModel* model, const QString& file_name, const QStr
   QString str;
   int n = 0;
 
-  if(f.open(QIODevice::ReadOnly)) while(f.read_line(str))
+  f.setCodec("UTF-8");
+
+  if(f.open(QIODevice::ReadOnly)) while(f.readLine(str))
   {
     QStringList L = str.split(separator, QString::KeepEmptyParts, Qt::CaseSensitive);
     QList<QStandardItem *> items;

@@ -5,12 +5,15 @@
 #include <QDebug>
 
 
-#define COL_VISIBLE_1   1
-#define COL_ID_1        0
+#define COL_DIETS_VISIBLE   1
+#define COL_DIETS_ID        0
 
-#define COL_VISIBLE_2   1
-#define COL_ID_2        0
-#define COL_REF_2       2
+#define COL_PROD_KINDS_VISIBLE   1
+#define COL_PROD_KINDS_ID        0
+
+#define COL_PRODUCTS_VISIBLE   1
+#define COL_PRODUCTS_ID        0
+#define COL_PRODUCTS_REF       2
 
 
 static const QRgb c_Highlited_List_Item_Bg(QRgb(qRgb(255, 249, 166)));
@@ -22,46 +25,50 @@ TestChBFiltMainWindow::TestChBFiltMainWindow(QWidget *parent) :
 {
   ui->setupUi(this);
 
-  mdl_1_orig = new QStandardItemModel(this);
-  mdl_2_orig = new QStandardItemModel(this);
+  mdlDietsFull = new QStandardItemModel(this);
+  mdlProdKindsFull = new QStandardItemModel(this);
+  mdlProductsFull = new QStandardItemModel(this);
 
-  ui->tableView_1->setModel(mdl_1_orig);
-  LoadCsvData(mdl_1_orig, ":/data/regions.csv", ";");
-  ui->tableView_1->resizeColumnsToContents();
-  ui->tableView_1->resizeRowsToContents();
-  ui->tableView_1->horizontalHeader()->setStretchLastSection(true);
+  LoadCsvData(mdlDietsFull, ":/data/diets.csv", ";");
+  LoadCsvData(mdlProdKindsFull, ":/data/prod-kinds.csv", ";");
+  LoadCsvData(mdlProductsFull, ":/data/products.csv", ";");
 
-  ui->tableView_2->setModel(mdl_2_orig);
-  LoadCsvData(mdl_2_orig, ":/data/towns.csv", ";");
-  ui->tableView_2->resizeColumnsToContents();
-  ui->tableView_2->resizeRowsToContents();
-  ui->tableView_2->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Stretch);
+  ui->tvDietsFull->setModel(mdlDietsFull);
+  ui->tvDietsFull->resizeColumnsToContents();
+  ui->tvDietsFull->resizeRowsToContents();
+  ui->tvDietsFull->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Stretch);
 
-  //QString file_name = QFileDialog::getOpenFileName(this, "Data file", ".");
-  //if(file_name.isEmpty()) return;
+  mdlDiets = new QCheckboxFilterModel(mdlDietsFull, COL_DIETS_VISIBLE, COL_DIETS_ID);
+  mdlDiets->setObjectName("mdlDiets");
+  mdlDiets->setup();
+  ui->lvDiets->setModel(mdlDiets);
+  ui->lvDiets->setModelColumn(COL_DIETS_VISIBLE);
 
-  //LoadCsvData(mdl_orig, file_name, ";");
+  mdlProdKinds = new QCheckboxFilterModel(mdlProdKindsFull, COL_PROD_KINDS_VISIBLE, COL_PROD_KINDS_ID);
+  mdlProdKinds->setObjectName("mdlProdKinds");
+  mdlProdKinds->setup();
+  ui->lvProdKinds->setModel(mdlProdKinds);
+  ui->lvProdKinds->setModelColumn(COL_PROD_KINDS_VISIBLE);
 
-  mdl_1 = new QCheckboxFilterModel(mdl_1_orig, COL_VISIBLE_1, COL_ID_1);
-  mdl_1->setObjectName("mdl_1");
-  mdl_1->setup();
-  ui->lv_1->setModel(mdl_1);
-  ui->lv_1->setModelColumn(COL_VISIBLE_1);
+  mdlProducts = new QCheckboxFilterModel(mdlProductsFull, COL_PRODUCTS_VISIBLE, COL_PRODUCTS_ID);
+  mdlProducts->setObjectName("mdlProducts");
+  mdlProducts->setup();
+  ui->lvProducts->setModel(mdlProducts);
+  ui->lvProducts->setModelColumn(COL_PRODUCTS_VISIBLE);
 
-  mdl_2 = new QCheckboxFilterModel(mdl_2_orig, COL_VISIBLE_2, COL_ID_2);
-  mdl_2->setObjectName("mdl_2");
-  mdl_1->setup();
-  ui->lv_2->setModel(mdl_2);
-  ui->lv_2->setModelColumn(COL_VISIBLE_2);
 
-  connect(mdl_1, SIGNAL(dataChanged(QModelIndex,QModelIndex,QVector<int>)),
-          this, SLOT(on_mdl_1_dataChanged(QModelIndex,QModelIndex,QVector<int>)));
+  connect(ui->lvDiets->selectionModel(), SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
+          this, SLOT(on_mdlDiets_orig_selection_changed(QItemSelection,QItemSelection)));
 
-  connect(mdl_2, SIGNAL(dataChanged(QModelIndex,QModelIndex,QVector<int>)),
-          this, SLOT(on_mdl_2_dataChanged(QModelIndex,QModelIndex,QVector<int>)));
+  connect(ui->lvProdKinds->selectionModel(), SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
+          this, SLOT(on_lvProdKinds_selection_changed(QItemSelection,QItemSelection)));
 
-  connect(ui->lv_1->selectionModel(), SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
-          this, SLOT(on_lv_1_selection_changed(QItemSelection,QItemSelection)));
+  connect(mdlProdKinds, SIGNAL(dataChanged(QModelIndex,QModelIndex,QVector<int>)),
+          this, SLOT(on_mdlProdKinds_dataChanged(QModelIndex,QModelIndex,QVector<int>)));
+
+  connect(mdlProducts, SIGNAL(dataChanged(QModelIndex,QModelIndex,QVector<int>)),
+          this, SLOT(on_mdlProducts_dataChanged(QModelIndex,QModelIndex,QVector<int>)));
+
 }
 
 
@@ -71,34 +78,32 @@ TestChBFiltMainWindow::~TestChBFiltMainWindow()
 }
 
 
-void TestChBFiltMainWindow::on_chb_1_toggled(bool checked)
+void TestChBFiltMainWindow::on_chbProdKinds_toggled(bool checked)
 {
   qDebug() << __FUNCTION__;
-  mdl_1->setShowCheckboxes(checked);
-  mdl_2->hideAllItems();
+  mdlProdKinds->setShowCheckboxes(checked);
+  mdlProducts->hideAllItems();
 }
 
 
-void TestChBFiltMainWindow::on_chb_2_toggled(bool checked)
+void TestChBFiltMainWindow::on_chbProducts_toggled(bool checked)
 {
   qDebug() << __FUNCTION__;
-  mdl_2->setShowCheckboxes(checked);
+  mdlProducts->setShowCheckboxes(checked);
 }
 
-
-void TestChBFiltMainWindow::on_lePattern_1_textChanged(const QString &arg1)
-{
-  qDebug() << __FUNCTION__;
-}
-
-
-void TestChBFiltMainWindow::on_lePattern_2_textChanged(const QString &arg1)
+void TestChBFiltMainWindow::on_lePatternDiets_textChanged(const QString &arg1)
 {
   qDebug() << __FUNCTION__;
 }
 
+void TestChBFiltMainWindow::on_lePatternProdKinds_textChanged(const QString &arg1)
+{
+  qDebug() << __FUNCTION__;
+}
 
-void TestChBFiltMainWindow::on_mdl_1_dataChanged(const QModelIndex& topLeft, const QModelIndex& bottomRight, const QVector<int>& roles)
+
+void TestChBFiltMainWindow::on_mdlProdKinds_dataChanged(const QModelIndex& topLeft, const QModelIndex& bottomRight, const QVector<int>& roles)
 {
   qDebug() << __FUNCTION__;
 
@@ -107,55 +112,76 @@ void TestChBFiltMainWindow::on_mdl_1_dataChanged(const QModelIndex& topLeft, con
 
   for(int i = top; i <= bottom; ++i)
   {
-    if((COL_VISIBLE_1 >= topLeft.column()) && (COL_VISIBLE_1 <= bottomRight.column()))
+    if((COL_PROD_KINDS_VISIBLE >= topLeft.column()) && (COL_PROD_KINDS_VISIBLE <= bottomRight.column()))
     {
-      const QModelIndex ind = topLeft.model()->index(i, COL_VISIBLE_1);
+      const QModelIndex ind = topLeft.model()->index(i, COL_PROD_KINDS_VISIBLE);
       QString id_str = ind.data(Qt::UserRole).toString();
 
       int checked = ind.data(Qt::CheckStateRole).toBool()? Qt::Checked: Qt::Unchecked;
 
-      mdl_2->toggleVisibilityReferenced(checked, id_str, COL_REF_2);
-      mdl_2->invalidate();
+      mdlProducts->toggleVisibilityReferenced(checked, id_str, COL_PRODUCTS_REF);
+      mdlProducts->invalidate();
     }
   }
 }
 
 
-void TestChBFiltMainWindow::on_mdl_2_dataChanged(const QModelIndex& topLeft, const QModelIndex& bottomRight, const QVector<int>& roles)
+void TestChBFiltMainWindow::on_lePatternProducts_textChanged(const QString &arg1)
 {
   qDebug() << __FUNCTION__;
 }
 
 
-void TestChBFiltMainWindow::on_le_regionPattern_textChanged(const QString &arg1)
-{
-
-}
-
-
-void TestChBFiltMainWindow::on_le_townPattern_textChanged(const QString &arg1)
-{
-
-}
-
-
-void TestChBFiltMainWindow::on_lv_1_selection_changed(const QItemSelection& selected, const QItemSelection& deselected)
+void TestChBFiltMainWindow::on_lvProdKinds_selection_changed(const QItemSelection& selected, const QItemSelection& deselected)
 {
   qDebug() << __FUNCTION__;
 
   foreach (const QModelIndex& ind, deselected.indexes())
   {
-    if(ind.column() != COL_VISIBLE_1) continue;
+    if(ind.column() != COL_PROD_KINDS_VISIBLE) continue;
 
     QString id_str = ind.data(Qt::UserRole).toString();
-    mdl_2->brush(QBrush(), id_str, COL_REF_2);
+    mdlProducts->brush(QBrush(), id_str, COL_PRODUCTS_REF);
   }
 
   foreach(const QModelIndex& ind, selected.indexes())
   {
-    if(ind.column() != COL_VISIBLE_1) continue;
+    if(ind.column() != COL_PROD_KINDS_VISIBLE) continue;
 
     QString id_str = ind.data(Qt::UserRole).toString();
-    mdl_2->brush(QBrush(c_Highlited_List_Item_Bg), id_str, COL_REF_2);
+    mdlProducts->brush(QBrush(c_Highlited_List_Item_Bg), id_str, COL_PRODUCTS_REF);
   }
+}
+
+
+void TestChBFiltMainWindow::on_mdlDiets_orig_selection_changed(const QItemSelection &selected, const QItemSelection &deselected)
+{
+  qDebug() << __FUNCTION__ << deselected << selected;
+
+  int rows_selected_parent = ui->lvDiets->selectionModel()->selectedRows().count();
+  int rows_visible_child = mdlProdKinds->visibleItemsCount();
+
+  if(rows_selected_parent == 0)
+  {
+    // Если в главной таблице ничего не выделено, показываем все элементы дочерней.
+    mdlProdKinds->showAllItems();
+  }
+  else
+  {
+    // Если в главной таблице что-то выделено...
+    if((rows_visible_child == mdlProdKinds->rowCount()) && (deselected.count() == 0))
+    {
+      // Если были видны все элементы дочерней таблицы, и в родительской
+      // никакое выделение не снято...
+      mdlProdKinds->hideAllItems();
+      mdlProdKinds->toggleVisibilityReferenced(true, selected, COL_PROD_KINDS_ID);
+    }
+    else
+    {
+      mdlProdKinds->toggleVisibilityReferenced(false, deselected, COL_PROD_KINDS_ID);
+      mdlProdKinds->toggleVisibilityReferenced(true, selected, COL_PROD_KINDS_ID);
+    }
+  }
+
+  mdlProdKinds->invalidate();
 }

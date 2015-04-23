@@ -28,7 +28,7 @@ void QDict::Load(const QString &file_name, const QString& delim)
   if(!f.open(QIODevice::ReadOnly | QIODevice::Text))
     throw QString("can not open file '%0'").arg(file_name);
 
-  while(f.read_nonempty_line(s))
+  while(f.readNonemptyLine(s))
   {
     pairs = s.trimmed().split(QRegExp(Delimeter));
     if(pairs.size() != 2)

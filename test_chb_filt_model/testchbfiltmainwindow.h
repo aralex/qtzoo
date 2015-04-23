@@ -22,31 +22,32 @@ class TestChBFiltMainWindow : public QMainWindow
 
   private slots:
 
-    void on_chb_1_toggled(bool checked);
+    void on_chbProdKinds_toggled(bool checked);
 
-    void on_chb_2_toggled(bool checked);
+    void on_chbProducts_toggled(bool checked);
 
-    void on_lePattern_1_textChanged(const QString &arg1);
+    void on_mdlProdKinds_dataChanged(const QModelIndex & topLeft, const QModelIndex & bottomRight, const QVector<int> & roles = QVector<int>());
 
-    void on_lePattern_2_textChanged(const QString &arg1);
+    void on_lePatternDiets_textChanged(const QString &arg1);
 
-    void on_mdl_1_dataChanged(const QModelIndex & topLeft, const QModelIndex & bottomRight, const QVector<int> & roles = QVector<int>());
+    void on_lePatternProdKinds_textChanged(const QString &arg1);
 
-    void on_mdl_2_dataChanged(const QModelIndex & topLeft, const QModelIndex & bottomRight, const QVector<int> & roles = QVector<int>());
+    void on_lePatternProducts_textChanged(const QString &arg1);
 
-    void on_le_regionPattern_textChanged(const QString &arg1);
+    void on_lvProdKinds_selection_changed(const QItemSelection &selected, const QItemSelection &deselected);
 
-    void on_le_townPattern_textChanged(const QString &arg1);
-
-    void on_lv_1_selection_changed(const QItemSelection &selected, const QItemSelection &deselected);
+    void on_mdlDiets_orig_selection_changed(const QItemSelection &selected, const QItemSelection &deselected);
 
   private:
     Ui::TestChBFiltMainWindow *ui;
 
-    QStandardItemModel* mdl_1_orig;
-    QStandardItemModel* mdl_2_orig;
-    QCheckboxFilterModel* mdl_1;
-    QCheckboxFilterModel* mdl_2;
+    QStandardItemModel* mdlDietsFull;
+    QStandardItemModel* mdlProdKindsFull;
+    QStandardItemModel* mdlProductsFull;
+
+    QCheckboxFilterModel* mdlDiets;
+    QCheckboxFilterModel* mdlProdKinds;
+    QCheckboxFilterModel* mdlProducts;
 
 };
 

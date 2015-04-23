@@ -3,6 +3,7 @@
 
 #include <QSortFilterProxyModel>
 #include <QBitArray>
+#include <QItemSelection>
 
 #include <QShadowDataModel.h>
 
@@ -21,6 +22,7 @@ class QCheckboxFilterModel : public QSortFilterProxyModel
     virtual bool filterAcceptsRow(int source_row, const QModelIndex &ind) const;
 
     QMap<QString, bool> strToMap(const QString& str) const;
+    QMap<QString, bool> rangeToMap(const QItemSelection& range, int column) const;
 
     QStringList strToList(const QString& str) const
     {
@@ -73,7 +75,9 @@ class QCheckboxFilterModel : public QSortFilterProxyModel
     void hideAllItems(void);
 
     void toggleVisibility(bool visible, const QString& vals);
+    void toggleVisibilityReferenced(bool visible, const QMap<QString, bool> &ids, int column);
     void toggleVisibilityReferenced(bool visible, const QString& vals, int column);
+    void toggleVisibilityReferenced(bool visible, const QItemSelection& range, int column);
 
     void showTheseItems(const QString& vals){ toggleVisibility(true, vals); }
     void hideTheseItems(const QString& vals){ toggleVisibility(false, vals); }
@@ -84,6 +88,8 @@ class QCheckboxFilterModel : public QSortFilterProxyModel
     void setup(void);
 
     void brush(const QBrush& brush, const QString& val, int column);
+
+    int visibleItemsCount(void){ return visibleItems.count(); }
 
   signals:
 
