@@ -10,11 +10,11 @@ bool QCheckboxFilterModel::filterAcceptsRow(int source_row, const QModelIndex &i
 
   if((source_row >= srcModel.rowCount()) || (source_row < 0)) return false;
 
-  qDebug() << "Vizible items count:" << visibleItems.size();
+  //qDebug() << "Vizible items count:" << visibleItems.size();
 
   bool Result = visibleItems.testBit(source_row);
 
-  qDebug() << "Vizible:" << Result;
+  //qDebug() << "Vizible:" << Result;
 
   if(Result)
   {
@@ -25,7 +25,7 @@ bool QCheckboxFilterModel::filterAcceptsRow(int source_row, const QModelIndex &i
       QString s(actual_item->data(Qt::DisplayRole).toString());
       Result = s.contains(Pattern, Qt::CaseInsensitive);
 
-      qDebug() << "contains" << Pattern << Result;
+      //qDebug() << "contains" << Pattern << Result;
     }
   }
 
@@ -81,30 +81,64 @@ QList<int> QCheckboxFilterModel::strToIntList(const QString &str) const
 }
 
 
+void QCheckboxFilterModel::createCheckvalueColumn()
+{
+  qDebug() << objectName() << __FUNCTION__;
+
+  QList<QStandardItem*> L;
+
+  // Checkbox values items creation.
+  for(int i = 0; i < srcModel.rowCount(); ++i)
+  {
+    QStandardItem* item = new QStandardItem;
+    item->setData(0, Qt::DisplayRole);
+    L.append(item);
+  }
+
+  Checkvalue_Column = srcModel.columnCount();
+  srcModel.appendColumn(L);                   // Creation of column for checkbox value.
+}
+
+
 QCheckboxFilterModel::QCheckboxFilterModel(QAbstractItemModel *src_mdl, int visible_col, int id_col, QObject *parent):
   QSortFilterProxyModel(parent),
   srcModel(src_mdl, visible_col, id_col, parent),
   ShowCheckboxes(false),
   Checkboxed_Column(visible_col),
-  Id_Column(id_col)
+  Id_Column(id_col),
+  Checkvalue_Column(-1)
 {
   setSourceModel(&srcModel);
   visibleItems.resize(srcModel.rowCount());
   visibleItems.fill(true);
+
+  createCheckvalueColumn();
 }
 
 
 void QCheckboxFilterModel::setShowCheckboxes(bool checkable)
 {
+  qDebug() << objectName() << "QCheckboxFilterModel::setShowCheckboxes" << checkable;
+
   if(ShowCheckboxes == checkable) return;
 
   ShowCheckboxes = checkable;
 
   for(int r = 0; r < srcModel.rowCount(); ++r)
   {
-    QStandardItem* item = srcModel.item(r, Checkboxed_Column);
-    item->setCheckable(checkable);
-    if(!checkable) item->setData(QVariant(), Qt::CheckStateRole);
+    QStandardItem* checkboxed_item = srcModel.item(r, Checkboxed_Column);
+    QStandardItem* checkvalue_item = srcModel.item(r, Checkvalue_Column);
+    int state = checkvalue_item->data(Qt::DisplayRole).toInt();
+
+    qDebug() << "--" << checkboxed_item->data(Qt::DisplayRole).toString() << checkvalue_item->data(Qt::DisplayRole).toInt();
+
+    checkboxed_item->setCheckable(checkable);
+    if(checkable)
+    {
+      checkboxed_item->setData(state, Qt::CheckStateRole);
+      qDebug() << "state" << state;
+    }
+    else checkboxed_item->setData(QVariant(), Qt::CheckStateRole);
   }
 }
 
@@ -374,12 +408,19 @@ void QCheckboxFilterModel::hideAllItems()
 
 void QCheckboxFilterModel::toggleVisibility(bool visible, const QString &vals)
 {
-  qDebug() << objectName() << __FUNCTION__;
+  qDebug() << objectName() << __FUNCTION__ << vals;
 
-  QList<int> numbers = strToIntList(vals);
+  QMap<QString, bool> ids = strToMap(vals);
 
-  foreach(int n, numbers)
-    visibleItems.setBit(n, visible);
+  for(int r = 0; r < srcModel.rowCount(); ++r)
+  {
+    QString id = srcModel.item(r, Id_Column)->data(Qt::DisplayRole).toString();
+    if(ids[id])
+    {
+      srcModel.item(r, Checkvalue_Column)->setData(Qt::Checked, Qt::DisplayRole);
+      visibleItems.setBit(r, visible);
+    }
+  }
 }
 
 
@@ -389,8 +430,12 @@ void QCheckboxFilterModel::toggleVisibilityReferenced(bool visible, const QMap<Q
 
   for(int r = 0; r < srcModel.rowCount(); ++r)
   {
-    QString n_str = srcModel.item(r, column)->data(Qt::DisplayRole).toString();
-    if(ids[n_str]) visibleItems.setBit(r, visible);
+    QString id = srcModel.item(r, column)->data(Qt::DisplayRole).toString();
+    if(ids[id])
+    {
+      srcModel.item(r, Checkvalue_Column)->setData(Qt::Checked, Qt::DisplayRole);
+      visibleItems.setBit(r, visible);
+    }
   }
 }
 
@@ -418,18 +463,43 @@ void QCheckboxFilterModel::showTheseItemsOnly(const QString &vals)
   showTheseItems(vals);
 }
 
+
 void QCheckboxFilterModel::setup()
 {
   // Checking for a source model resize.
   connect(&srcModel, SIGNAL(sig_recreated()), this, SLOT(on_srcModel_recreated()));
+
+  // Saving state of checkboxes.
+  connect(&srcModel, SIGNAL(dataChanged(QModelIndex,QModelIndex,QVector<int>)), this, SLOT(on_srcModel_dataChanged(QModelIndex,QModelIndex,QVector<int>)));
 }
 
 
 void QCheckboxFilterModel::on_srcModel_recreated()
 {
-  qDebug() << objectName() << __FUNCTION__;
-  visibleItems.resize(srcModel.rowCount());
+  qDebug() << objectName() << "QCheckboxFilterModel::on_srcModel_recreated";
+
+  int rows = srcModel.rowCount();
+  visibleItems.resize(rows);
   visibleItems.fill(true);
+
+  createCheckvalueColumn();
+}
+
+
+void QCheckboxFilterModel::on_srcModel_dataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight, const QVector<int> &roles)
+{
+  qDebug() << __FUNCTION__;
+
+  if((Checkboxed_Column < topLeft.column()) || (Checkboxed_Column > bottomRight.column())) return;
+
+  int top = topLeft.row();
+  int bottom = bottomRight.row();
+
+  for(int i = top; i <= bottom; ++i)
+  {
+    int checked = srcModel.index(i, Checkboxed_Column).data(Qt::CheckStateRole).toInt();
+    srcModel.item(i, Checkvalue_Column)->setData(checked, Qt::DisplayRole);
+  }
 }
 
 

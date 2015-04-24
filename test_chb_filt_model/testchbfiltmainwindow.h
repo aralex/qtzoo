@@ -40,6 +40,8 @@ class TestChBFiltMainWindow : public QMainWindow
 
     void on_mdlProdKinds_selection_changed(const QItemSelection &selected, const QItemSelection &deselected);
 
+    void on_lvDiets_doubleClicked(const QModelIndex &index);
+
   private:
     Ui::TestChBFiltMainWindow *ui;
 

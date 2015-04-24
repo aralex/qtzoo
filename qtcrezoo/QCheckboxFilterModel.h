@@ -10,12 +10,15 @@
 
 class QCheckboxFilterModel : public QSortFilterProxyModel
 {
+    Q_OBJECT
+
   protected:
     QShadowDataModel srcModel;
     QString Pattern;
     bool ShowCheckboxes;
     int Checkboxed_Column;
     int Id_Column;
+    int Checkvalue_Column;
 
     QBitArray visibleItems;
 
@@ -32,8 +35,12 @@ class QCheckboxFilterModel : public QSortFilterProxyModel
 
     QList<int> strToIntList(const QString& str) const;
 
+    void createCheckvalueColumn();
+
   public:
     QCheckboxFilterModel(QAbstractItemModel* src_mdl, int visible_col, int id_col, QObject *parent = 0);
+
+    int checkvalueColumn(){ return Checkvalue_Column; }
 
     void setPattern(const QString& pat){ Pattern = pat; }
 
@@ -95,6 +102,8 @@ class QCheckboxFilterModel : public QSortFilterProxyModel
 
   public slots:
     void on_srcModel_recreated(void);
+
+    void on_srcModel_dataChanged(const QModelIndex& topLeft, const QModelIndex& bottomRight, const QVector<int>& roles);
 
 };
 

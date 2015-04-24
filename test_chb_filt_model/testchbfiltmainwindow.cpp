@@ -112,14 +112,15 @@ void TestChBFiltMainWindow::on_lePatternProdKinds_textChanged(const QString &arg
 
 void TestChBFiltMainWindow::on_mdlProdKinds_dataChanged(const QModelIndex& topLeft, const QModelIndex& bottomRight, const QVector<int>& roles)
 {
-  qDebug() << __FUNCTION__;
+  qDebug() << __FUNCTION__ << topLeft.column() << bottomRight.column();
 
   int top = topLeft.row();
   int bottom = bottomRight.row();
 
   for(int i = top; i <= bottom; ++i)
   {
-    if((COL_PROD_KINDS_VISIBLE >= topLeft.column()) && (COL_PROD_KINDS_VISIBLE <= bottomRight.column()))
+    if((bottomRight.column() == mdlProdKinds->checkvalueColumn()) ||
+       ((COL_PROD_KINDS_VISIBLE >= topLeft.column()) && (COL_PROD_KINDS_VISIBLE <= bottomRight.column())))
     {
       const QModelIndex ind = topLeft.model()->index(i, COL_PROD_KINDS_VISIBLE);
       QString id_str = ind.data(Qt::UserRole).toString();
@@ -164,6 +165,8 @@ void TestChBFiltMainWindow::on_lvProdKinds_selection_changed(const QItemSelectio
 void TestChBFiltMainWindow::on_mdlDiets_selection_changed(const QItemSelection &selected, const QItemSelection &deselected)
 {
   qDebug() << __FUNCTION__;
+
+  ui->lvProdKinds->selectionModel()->clear();
 
   if(selected.count())
   {
@@ -226,3 +229,9 @@ void TestChBFiltMainWindow::on_mdlProdKinds_selection_changed(const QItemSelecti
 
 }
 
+
+void TestChBFiltMainWindow::on_lvDiets_doubleClicked(const QModelIndex &index)
+{
+  mdlProdKinds->setShowCheckboxes(true);
+  mdlProducts->setShowCheckboxes(true);
+}

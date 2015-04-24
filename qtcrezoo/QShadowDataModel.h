@@ -12,7 +12,6 @@ class QShadowDataModel : public QMirrorModel
     Q_OBJECT
 
   protected:
-
     int targetColumn;
     int shadowColumn;
 

@@ -130,5 +130,5 @@ void QMirrorModel::recreate()
 
 
   emit sig_recreated();
-  //qDebug() << "QMirrorModel::recreate finished!";
+  qDebug() << "QMirrorModel::recreate finished!";
 }
