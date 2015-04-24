@@ -36,7 +36,9 @@ class TestChBFiltMainWindow : public QMainWindow
 
     void on_lvProdKinds_selection_changed(const QItemSelection &selected, const QItemSelection &deselected);
 
-    void on_mdlDiets_orig_selection_changed(const QItemSelection &selected, const QItemSelection &deselected);
+    void on_mdlDiets_selection_changed(const QItemSelection &selected, const QItemSelection &deselected);
+
+    void on_mdlProdKinds_selection_changed(const QItemSelection &selected, const QItemSelection &deselected);
 
   private:
     Ui::TestChBFiltMainWindow *ui;

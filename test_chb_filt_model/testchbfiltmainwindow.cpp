@@ -5,11 +5,18 @@
 #include <QDebug>
 
 
-#define COL_DIETS_VISIBLE   1
-#define COL_DIETS_ID        0
+#define COL_DIETS_ID          0
+#define COL_DIETS_NAME        1
+#define COL_DIETS_PROD_KINDS  2
+#define COL_DIETS_PRODUCTS    3
 
-#define COL_PROD_KINDS_VISIBLE   1
-#define COL_PROD_KINDS_ID        0
+#define COL_DIETS_VISIBLE     COL_DIETS_NAME
+
+
+#define COL_PROD_KINDS_ID         0
+#define COL_PROD_KINDS_NAME       1
+#define COL_PROD_KINDS_VISIBLE    COL_PROD_KINDS_NAME
+
 
 #define COL_PRODUCTS_VISIBLE   1
 #define COL_PRODUCTS_ID        0
@@ -58,7 +65,7 @@ TestChBFiltMainWindow::TestChBFiltMainWindow(QWidget *parent) :
 
 
   connect(ui->lvDiets->selectionModel(), SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
-          this, SLOT(on_mdlDiets_orig_selection_changed(QItemSelection,QItemSelection)));
+          this, SLOT(on_mdlDiets_selection_changed(QItemSelection,QItemSelection)));
 
   connect(ui->lvProdKinds->selectionModel(), SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
           this, SLOT(on_lvProdKinds_selection_changed(QItemSelection,QItemSelection)));
@@ -154,9 +161,36 @@ void TestChBFiltMainWindow::on_lvProdKinds_selection_changed(const QItemSelectio
 }
 
 
-void TestChBFiltMainWindow::on_mdlDiets_orig_selection_changed(const QItemSelection &selected, const QItemSelection &deselected)
+void TestChBFiltMainWindow::on_mdlDiets_selection_changed(const QItemSelection &selected, const QItemSelection &deselected)
 {
-  qDebug() << __FUNCTION__ << deselected << selected;
+  qDebug() << __FUNCTION__;
+
+  if(selected.count())
+  {
+    mdlProdKinds->hideAllItems();
+    mdlProducts->hideAllItems();
+
+    foreach(const QModelIndex& ind, selected.indexes())
+    {
+      QString ids_prod_kinds = mdlDietsFull->index(ind.row(), COL_DIETS_PROD_KINDS).data(Qt::DisplayRole).toString();
+      mdlProdKinds->toggleVisibility(true, ids_prod_kinds);
+
+      QString ids_products = mdlDietsFull->index(ind.row(), COL_DIETS_PRODUCTS).data(Qt::DisplayRole).toString();
+      mdlProducts->toggleVisibility(true, ids_products);
+    }
+  }
+  else
+  {
+    mdlProdKinds->showAllItems();
+    mdlProducts->showAllItems();
+  }
+
+  mdlProdKinds->invalidate();
+  mdlProducts->invalidate();
+
+
+
+  /*
 
   int rows_selected_parent = ui->lvDiets->selectionModel()->selectedRows().count();
   int rows_visible_child = mdlProdKinds->visibleItemsCount();
@@ -184,4 +218,11 @@ void TestChBFiltMainWindow::on_mdlDiets_orig_selection_changed(const QItemSelect
   }
 
   mdlProdKinds->invalidate();
+*/
 }
+
+void TestChBFiltMainWindow::on_mdlProdKinds_selection_changed(const QItemSelection& selected, const QItemSelection& deselected)
+{
+
+}
+
