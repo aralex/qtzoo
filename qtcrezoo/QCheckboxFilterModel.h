@@ -18,9 +18,7 @@ class QCheckboxFilterModel : public QSortFilterProxyModel
     bool ShowCheckboxes;
     int Checkboxed_Column;
     int Id_Column;
-    int Checkvalue_Column;
-
-    QBitArray visibleItems;
+    int Service_Column;
 
     virtual bool filterAcceptsRow(int source_row, const QModelIndex &ind) const;
 
@@ -35,12 +33,12 @@ class QCheckboxFilterModel : public QSortFilterProxyModel
 
     QList<int> strToIntList(const QString& str) const;
 
-    void createCheckvalueColumn();
+    void createServiceColumn();
 
   public:
     QCheckboxFilterModel(QAbstractItemModel* src_mdl, int visible_col, int id_col, QObject *parent = 0);
 
-    int checkvalueColumn(){ return Checkvalue_Column; }
+    int serviceColumn(){ return Service_Column; }
 
     void setPattern(const QString& pat){ Pattern = pat; }
 
@@ -63,11 +61,9 @@ class QCheckboxFilterModel : public QSortFilterProxyModel
     //void setShowUncheckedCheckboxes(bool state);
     void hideCheckboxes(void);
 
-    void setMode(bool checkboxes, bool show_unchecked, const QMap<QString, bool> &vals);
-
-    void setMode(bool checkboxes, bool show_unchecked, const QString &vals);
-
-    void setMode(bool checkboxes, bool show_unchecked, bool enabled);
+    //void setMode(bool checkboxes, bool show_unchecked, const QMap<QString, bool> &vals);
+    //void setMode(bool checkboxes, bool show_unchecked, const QString &vals);
+    //void setMode(bool checkboxes, bool show_unchecked, bool enabled);
 
     void Brush(const QBrush& brush, int column, const QString& val);
 
@@ -96,7 +92,7 @@ class QCheckboxFilterModel : public QSortFilterProxyModel
 
     void brush(const QBrush& brush, const QString& val, int column);
 
-    int visibleItemsCount(void){ return visibleItems.count(); }
+    //int visibleItemsCount(void){ return visibleItems.count(); }
 
   signals:
 

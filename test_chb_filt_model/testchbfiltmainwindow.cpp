@@ -9,7 +9,6 @@
 #define COL_DIETS_NAME        1
 #define COL_DIETS_PROD_KINDS  2
 #define COL_DIETS_PRODUCTS    3
-
 #define COL_DIETS_VISIBLE     COL_DIETS_NAME
 
 
@@ -18,9 +17,11 @@
 #define COL_PROD_KINDS_VISIBLE    COL_PROD_KINDS_NAME
 
 
-#define COL_PRODUCTS_VISIBLE   1
 #define COL_PRODUCTS_ID        0
+#define COL_PRODUCTS_NAME      1
 #define COL_PRODUCTS_REF       2
+
+#define COL_PRODUCTS_VISIBLE   COL_PRODUCTS_NAME
 
 
 static const QRgb c_Highlited_List_Item_Bg(QRgb(qRgb(255, 249, 166)));
@@ -64,17 +65,20 @@ TestChBFiltMainWindow::TestChBFiltMainWindow(QWidget *parent) :
   ui->lvProducts->setModelColumn(COL_PRODUCTS_VISIBLE);
 
 
+  ui->btnCancel->setEnabled(false);
+
+
   connect(ui->lvDiets->selectionModel(), SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
           this, SLOT(on_mdlDiets_selection_changed(QItemSelection,QItemSelection)));
 
   connect(ui->lvProdKinds->selectionModel(), SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
           this, SLOT(on_lvProdKinds_selection_changed(QItemSelection,QItemSelection)));
 
-  connect(mdlProdKinds, SIGNAL(dataChanged(QModelIndex,QModelIndex,QVector<int>)),
-          this, SLOT(on_mdlProdKinds_dataChanged(QModelIndex,QModelIndex,QVector<int>)));
+//  connect(mdlProdKinds, SIGNAL(dataChanged(QModelIndex,QModelIndex,QVector<int>)),
+//          this, SLOT(on_mdlProdKinds_dataChanged(QModelIndex,QModelIndex,QVector<int>)));
 
-  connect(mdlProducts, SIGNAL(dataChanged(QModelIndex,QModelIndex,QVector<int>)),
-          this, SLOT(on_mdlProducts_dataChanged(QModelIndex,QModelIndex,QVector<int>)));
+//  connect(mdlProducts, SIGNAL(dataChanged(QModelIndex,QModelIndex,QVector<int>)),
+//          this, SLOT(on_mdlProducts_dataChanged(QModelIndex,QModelIndex,QVector<int>)));
 
 }
 
@@ -116,16 +120,18 @@ void TestChBFiltMainWindow::on_mdlProdKinds_dataChanged(const QModelIndex& topLe
 
   int top = topLeft.row();
   int bottom = bottomRight.row();
+  int sc = mdlProdKinds->serviceColumn();
 
   for(int i = top; i <= bottom; ++i)
   {
-    if((bottomRight.column() == mdlProdKinds->checkvalueColumn()) ||
-       ((COL_PROD_KINDS_VISIBLE >= topLeft.column()) && (COL_PROD_KINDS_VISIBLE <= bottomRight.column())))
+    if((sc >= topLeft.column()) && (sc <= bottomRight.column()))
     {
       const QModelIndex ind = topLeft.model()->index(i, COL_PROD_KINDS_VISIBLE);
       QString id_str = ind.data(Qt::UserRole).toString();
 
       int checked = ind.data(Qt::CheckStateRole).toBool()? Qt::Checked: Qt::Unchecked;
+
+      qDebug() << "toggle(" << checked << ") ids" << id_str;
 
       mdlProducts->toggleVisibilityReferenced(checked, id_str, COL_PRODUCTS_REF);
       mdlProducts->invalidate();
@@ -192,7 +198,6 @@ void TestChBFiltMainWindow::on_mdlDiets_selection_changed(const QItemSelection &
   mdlProducts->invalidate();
 
 
-
   /*
 
   int rows_selected_parent = ui->lvDiets->selectionModel()->selectedRows().count();
@@ -234,4 +239,11 @@ void TestChBFiltMainWindow::on_lvDiets_doubleClicked(const QModelIndex &index)
 {
   mdlProdKinds->setShowCheckboxes(true);
   mdlProducts->setShowCheckboxes(true);
+  ui->btnCancel->setEnabled(true);
+}
+
+
+void TestChBFiltMainWindow::on_btnCancel_clicked()
+{
+  ui->btnCancel->setEnabled(false);
 }

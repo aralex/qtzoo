@@ -42,6 +42,8 @@ class TestChBFiltMainWindow : public QMainWindow
 
     void on_lvDiets_doubleClicked(const QModelIndex &index);
 
+    void on_btnCancel_clicked();
+
   private:
     Ui::TestChBFiltMainWindow *ui;
 
