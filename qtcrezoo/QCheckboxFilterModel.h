@@ -92,6 +92,9 @@ class QCheckboxFilterModel : public QSortFilterProxyModel
 
     void brush(const QBrush& brush, const QString& val, int column);
 
+    bool isItemChecked(int row) const;
+    //bool isItemVisible(int src_row) const;
+
     //int visibleItemsCount(void){ return visibleItems.count(); }
 
   signals:

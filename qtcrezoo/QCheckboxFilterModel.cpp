@@ -425,7 +425,7 @@ void QCheckboxFilterModel::hideAllItems()
   {
     QStandardItem* srv_item = srcModel.item(r, Service_Column);
     srv_item->setData(false, Qt::DisplayRole);
-    //srv_item->setData(Qt::Unchecked, Qt::CheckStateRole);
+    srv_item->setData(Qt::Unchecked, Qt::CheckStateRole);
   }
 }
 
@@ -444,7 +444,7 @@ void QCheckboxFilterModel::toggleVisibility(bool visible, const QString &vals)
     {
       qDebug() << "present";
       srcModel.item(r, Service_Column)->setData(visible, Qt::DisplayRole);
-      //srcModel.item(r, Service_Column)->setData(visible? Qt::Checked: Qt::Unchecked, Qt::CheckStateRole);
+      srcModel.item(r, Service_Column)->setData(visible? Qt::Checked: Qt::Unchecked, Qt::CheckStateRole);
     }
   }
 }
@@ -460,7 +460,9 @@ void QCheckboxFilterModel::toggleVisibilityReferenced(bool visible, const QMap<Q
     if(ids[id])
     {
       srcModel.item(r, Service_Column)->setData(visible, Qt::DisplayRole);
-      //srcModel.item(r, Service_Column)->setData(visible? Qt::Checked: Qt::Unchecked, Qt::CheckStateRole);
+      srcModel.item(r, Service_Column)->setData(visible? Qt::Checked: Qt::Unchecked, Qt::CheckStateRole);
+
+      //srcModel.item(r, Checkboxed_Column)->setEnabled(false);
     }
   }
 }
@@ -545,4 +547,10 @@ void QCheckboxFilterModel::brush(const QBrush& brush, const QString& val, int co
     if(srcModel.item(r, column)->data(Qt::DisplayRole) == val)
       srcModel.item(r, Checkboxed_Column)->setData(brush, Qt::BackgroundRole);
   }
+}
+
+bool QCheckboxFilterModel::isItemChecked(int row) const
+{
+  QModelIndex ind_src = mapToSource(index(row, 0));
+  return (srcModel.item(ind_src.row(), Service_Column)->data(Qt::CheckStateRole) != Qt::Unchecked);
 }

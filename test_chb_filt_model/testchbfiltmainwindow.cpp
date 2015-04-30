@@ -74,8 +74,8 @@ TestChBFiltMainWindow::TestChBFiltMainWindow(QWidget *parent) :
   connect(ui->lvProdKinds->selectionModel(), SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
           this, SLOT(on_lvProdKinds_selection_changed(QItemSelection,QItemSelection)));
 
-//  connect(mdlProdKinds, SIGNAL(dataChanged(QModelIndex,QModelIndex,QVector<int>)),
-//          this, SLOT(on_mdlProdKinds_dataChanged(QModelIndex,QModelIndex,QVector<int>)));
+  connect(mdlProdKinds, SIGNAL(dataChanged(QModelIndex,QModelIndex,QVector<int>)),
+          this, SLOT(on_mdlProdKinds_dataChanged(QModelIndex,QModelIndex,QVector<int>)));
 
 //  connect(mdlProducts, SIGNAL(dataChanged(QModelIndex,QModelIndex,QVector<int>)),
 //          this, SLOT(on_mdlProducts_dataChanged(QModelIndex,QModelIndex,QVector<int>)));
@@ -111,60 +111,6 @@ void TestChBFiltMainWindow::on_lePatternDiets_textChanged(const QString &arg1)
 void TestChBFiltMainWindow::on_lePatternProdKinds_textChanged(const QString &arg1)
 {
   qDebug() << __FUNCTION__;
-}
-
-
-void TestChBFiltMainWindow::on_mdlProdKinds_dataChanged(const QModelIndex& topLeft, const QModelIndex& bottomRight, const QVector<int>& roles)
-{
-  qDebug() << __FUNCTION__ << topLeft.column() << bottomRight.column();
-
-  int top = topLeft.row();
-  int bottom = bottomRight.row();
-  int sc = mdlProdKinds->serviceColumn();
-
-  for(int i = top; i <= bottom; ++i)
-  {
-    if((sc >= topLeft.column()) && (sc <= bottomRight.column()))
-    {
-      const QModelIndex ind = topLeft.model()->index(i, COL_PROD_KINDS_VISIBLE);
-      QString id_str = ind.data(Qt::UserRole).toString();
-
-      int checked = ind.data(Qt::CheckStateRole).toBool()? Qt::Checked: Qt::Unchecked;
-
-      qDebug() << "toggle(" << checked << ") ids" << id_str;
-
-      mdlProducts->toggleVisibilityReferenced(checked, id_str, COL_PRODUCTS_REF);
-      mdlProducts->invalidate();
-    }
-  }
-}
-
-
-void TestChBFiltMainWindow::on_lePatternProducts_textChanged(const QString &arg1)
-{
-  qDebug() << __FUNCTION__;
-}
-
-
-void TestChBFiltMainWindow::on_lvProdKinds_selection_changed(const QItemSelection& selected, const QItemSelection& deselected)
-{
-  qDebug() << __FUNCTION__;
-
-  foreach (const QModelIndex& ind, deselected.indexes())
-  {
-    if(ind.column() != COL_PROD_KINDS_VISIBLE) continue;
-
-    QString id_str = ind.data(Qt::UserRole).toString();
-    mdlProducts->brush(QBrush(), id_str, COL_PRODUCTS_REF);
-  }
-
-  foreach(const QModelIndex& ind, selected.indexes())
-  {
-    if(ind.column() != COL_PROD_KINDS_VISIBLE) continue;
-
-    QString id_str = ind.data(Qt::UserRole).toString();
-    mdlProducts->brush(QBrush(c_Highlited_List_Item_Bg), id_str, COL_PRODUCTS_REF);
-  }
 }
 
 
@@ -229,11 +175,6 @@ void TestChBFiltMainWindow::on_mdlDiets_selection_changed(const QItemSelection &
 */
 }
 
-void TestChBFiltMainWindow::on_mdlProdKinds_selection_changed(const QItemSelection& selected, const QItemSelection& deselected)
-{
-
-}
-
 
 void TestChBFiltMainWindow::on_lvDiets_doubleClicked(const QModelIndex &index)
 {
@@ -241,6 +182,66 @@ void TestChBFiltMainWindow::on_lvDiets_doubleClicked(const QModelIndex &index)
   mdlProducts->setShowCheckboxes(true);
   ui->btnCancel->setEnabled(true);
 }
+
+
+void TestChBFiltMainWindow::on_mdlProdKinds_dataChanged(const QModelIndex& topLeft, const QModelIndex& bottomRight, const QVector<int>& roles)
+{
+  qDebug() << __FUNCTION__ << topLeft.column() << bottomRight.column();
+
+  int top = topLeft.row();
+  int bottom = bottomRight.row();
+  int sc = mdlProdKinds->serviceColumn();
+
+  for(int i = top; i <= bottom; ++i)
+  {
+    if((sc >= topLeft.column()) && (sc <= bottomRight.column()))
+    {
+      const QModelIndex ind = topLeft.model()->index(i, COL_PROD_KINDS_VISIBLE);
+      QString id_str = ind.data(Qt::UserRole).toString();
+
+      int checked = mdlProdKinds->isItemChecked(i);
+
+      qDebug() << "toggle(" << checked << ") ids" << id_str;
+
+      mdlProducts->toggleVisibilityReferenced(checked, id_str, COL_PRODUCTS_REF);
+      mdlProducts->invalidate();
+    }
+  }
+}
+
+
+void TestChBFiltMainWindow::on_mdlProdKinds_selection_changed(const QItemSelection& selected, const QItemSelection& deselected)
+{
+
+}
+
+void TestChBFiltMainWindow::on_lvProdKinds_selection_changed(const QItemSelection& selected, const QItemSelection& deselected)
+{
+  qDebug() << __FUNCTION__;
+
+  foreach (const QModelIndex& ind, deselected.indexes())
+  {
+    if(ind.column() != COL_PROD_KINDS_VISIBLE) continue;
+
+    QString id_str = ind.data(Qt::UserRole).toString();
+    mdlProducts->brush(QBrush(), id_str, COL_PRODUCTS_REF);
+  }
+
+  foreach(const QModelIndex& ind, selected.indexes())
+  {
+    if(ind.column() != COL_PROD_KINDS_VISIBLE) continue;
+
+    QString id_str = ind.data(Qt::UserRole).toString();
+    mdlProducts->brush(QBrush(c_Highlited_List_Item_Bg), id_str, COL_PRODUCTS_REF);
+  }
+}
+
+
+void TestChBFiltMainWindow::on_lePatternProducts_textChanged(const QString &arg1)
+{
+  qDebug() << __FUNCTION__;
+}
+
 
 
 void TestChBFiltMainWindow::on_btnCancel_clicked()
