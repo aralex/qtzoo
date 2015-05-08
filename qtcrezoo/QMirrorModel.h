@@ -9,10 +9,10 @@ class QMirrorModel: public QStandardItemModel
     Q_OBJECT
 
   protected:
-    QAbstractItemModel* srcModel;
+    const QAbstractItemModel* srcModel;
 
   public:
-    explicit QMirrorModel(QAbstractItemModel* src_mdl, QObject *parent = 0);
+    explicit QMirrorModel(const QAbstractItemModel *src_mdl, QObject *parent = 0);
 
     virtual void recreate(void);
 

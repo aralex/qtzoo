@@ -87,7 +87,7 @@ void QMirrorModel::on_rowsRemoved(const QModelIndex &parent, int first, int last
 }
 
 
-QMirrorModel::QMirrorModel(QAbstractItemModel *src_mdl, QObject *parent):
+QMirrorModel::QMirrorModel(const QAbstractItemModel *src_mdl, QObject *parent):
   srcModel(src_mdl),
   QStandardItemModel(parent)
 {

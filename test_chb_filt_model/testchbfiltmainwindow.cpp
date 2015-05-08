@@ -80,6 +80,11 @@ TestChBFiltMainWindow::TestChBFiltMainWindow(QWidget *parent) :
 //  connect(mdlProducts, SIGNAL(dataChanged(QModelIndex,QModelIndex,QVector<int>)),
 //          this, SLOT(on_mdlProducts_dataChanged(QModelIndex,QModelIndex,QVector<int>)));
 
+  mdlSpy1 = new QSpyModel(mdlProdKinds);
+  ui->tvSpy1->setModel(mdlSpy1);
+
+  mdlSpy2 = new QSpyModel(mdlProducts->getSrcModel());
+  ui->tvSpy2->setModel(mdlSpy2);
 }
 
 
@@ -210,11 +215,6 @@ void TestChBFiltMainWindow::on_mdlProdKinds_dataChanged(const QModelIndex& topLe
 }
 
 
-void TestChBFiltMainWindow::on_mdlProdKinds_selection_changed(const QItemSelection& selected, const QItemSelection& deselected)
-{
-
-}
-
 void TestChBFiltMainWindow::on_lvProdKinds_selection_changed(const QItemSelection& selected, const QItemSelection& deselected)
 {
   qDebug() << __FUNCTION__;
@@ -246,5 +246,7 @@ void TestChBFiltMainWindow::on_lePatternProducts_textChanged(const QString &arg1
 
 void TestChBFiltMainWindow::on_btnCancel_clicked()
 {
+  mdlProdKinds->setShowCheckboxes(false);
+  mdlProducts->setShowCheckboxes(false);
   ui->btnCancel->setEnabled(false);
 }

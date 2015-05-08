@@ -10,6 +10,7 @@ void QShadowDataModel::makeShadow()
   }
 }
 
+
 void QShadowDataModel::recreate()
 {
   QMirrorModel::recreate();

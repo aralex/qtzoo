@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QStandardItemModel>
 #include "QCheckboxFilterModel.h"
+#include "QSpyModel.h"
 
 #include "model_tools.h"
 
@@ -38,8 +39,6 @@ class TestChBFiltMainWindow : public QMainWindow
 
     void on_mdlDiets_selection_changed(const QItemSelection &selected, const QItemSelection &deselected);
 
-    void on_mdlProdKinds_selection_changed(const QItemSelection &selected, const QItemSelection &deselected);
-
     void on_lvDiets_doubleClicked(const QModelIndex &index);
 
     void on_btnCancel_clicked();
@@ -54,6 +53,9 @@ class TestChBFiltMainWindow : public QMainWindow
     QCheckboxFilterModel* mdlDiets;
     QCheckboxFilterModel* mdlProdKinds;
     QCheckboxFilterModel* mdlProducts;
+
+    QSpyModel* mdlSpy1;
+    QSpyModel* mdlSpy2;
 
 };
 

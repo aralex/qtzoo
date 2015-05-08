@@ -21,7 +21,8 @@ SOURCES += \
     QSelectProxy.cpp \
     QShadowDataModel.cpp \
     QTextFile.cpp \
-    model_tools.cpp
+    model_tools.cpp \
+    QSpyModel.cpp
 
 HEADERS += \
     QCheckboxFilterModel.h \
@@ -34,7 +35,8 @@ HEADERS += \
     QSelectProxy.h \
     QShadowDataModel.h \
     QTextFile.h \
-    model_tools.h
+    model_tools.h \
+    QSpyModel.h
 
 unix {
     target.path = /usr/lib
