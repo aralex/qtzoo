@@ -29,7 +29,8 @@ static const QRgb c_Highlited_List_Item_Bg(QRgb(qRgb(255, 249, 166)));
 
 TestChBFiltMainWindow::TestChBFiltMainWindow(QWidget *parent) :
   QMainWindow(parent),
-  ui(new Ui::TestChBFiltMainWindow)
+  ui(new Ui::TestChBFiltMainWindow),
+  buttonCancelClicked(false)
 {
   ui->setupUi(this);
 
@@ -186,12 +187,15 @@ void TestChBFiltMainWindow::on_lvDiets_doubleClicked(const QModelIndex &index)
   mdlProdKinds->setShowCheckboxes(true);
   mdlProducts->setShowCheckboxes(true);
   ui->btnCancel->setEnabled(true);
+  ui->lvDiets->setEnabled(false);
 }
 
 
 void TestChBFiltMainWindow::on_mdlProdKinds_dataChanged(const QModelIndex& topLeft, const QModelIndex& bottomRight, const QVector<int>& roles)
 {
   qDebug() << __FUNCTION__ << topLeft.column() << bottomRight.column();
+
+  if(buttonCancelClicked) return;
 
   int top = topLeft.row();
   int bottom = bottomRight.row();
@@ -212,6 +216,7 @@ void TestChBFiltMainWindow::on_mdlProdKinds_dataChanged(const QModelIndex& topLe
       mdlProducts->invalidate();
     }
   }
+
 }
 
 
@@ -246,7 +251,15 @@ void TestChBFiltMainWindow::on_lePatternProducts_textChanged(const QString &arg1
 
 void TestChBFiltMainWindow::on_btnCancel_clicked()
 {
+  buttonCancelClicked = true;
+
+  mdlProdKinds->hideUnchecked();
+  mdlProducts->hideUnchecked();
+
   mdlProdKinds->setShowCheckboxes(false);
   mdlProducts->setShowCheckboxes(false);
+
   ui->btnCancel->setEnabled(false);
+  buttonCancelClicked = false;
+  ui->lvDiets->setEnabled(true);
 }

@@ -57,6 +57,8 @@ class TestChBFiltMainWindow : public QMainWindow
     QSpyModel* mdlSpy1;
     QSpyModel* mdlSpy2;
 
+    bool buttonCancelClicked;
+
 };
 
 #endif // TESTCHBFILTMAINWINDOW_H

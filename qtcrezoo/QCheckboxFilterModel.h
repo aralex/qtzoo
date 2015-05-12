@@ -17,6 +17,7 @@ class QCheckboxFilterModel : public QSortFilterProxyModel
     QString Pattern;
 
     bool ShowCheckboxes;
+    bool ShowUnchecked;
 
     int Checkboxed_Column;
     int Id_Column;
@@ -45,6 +46,7 @@ class QCheckboxFilterModel : public QSortFilterProxyModel
     void setPattern(const QString& pat){ Pattern = pat; }
 
     void setShowCheckboxes(bool checkable);
+    void setShowUnchecked(bool state);
 
     void setChecked(int state, const QMap<QString, bool>& vals);
     void resetChecked(int state, const QMap<QString, bool>& vals);
@@ -98,6 +100,7 @@ class QCheckboxFilterModel : public QSortFilterProxyModel
     //int visibleItemsCount(void){ return visibleItems.count(); }
 
     const QAbstractItemModel* getSrcModel() const { return &srcModel; }
+    void hideUnchecked();
 
   signals:
 

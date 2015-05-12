@@ -18,7 +18,8 @@ bool QCheckboxFilterModel::filterAcceptsRow(int source_row, const QModelIndex &i
 
   //qDebug() << "Vizible items count:" << visibleItems.size();
 
-  bool Result = srcModel.item(source_row, Service_Column)->data(Qt::DisplayRole).toBool();
+  bool Result = ShowUnchecked &&
+      srcModel.item(source_row, Service_Column)->data(Qt::DisplayRole).toBool();
 
   //qDebug() << "Vizible:" << Result;
 
@@ -111,6 +112,7 @@ QCheckboxFilterModel::QCheckboxFilterModel(QAbstractItemModel *src_mdl, int visi
   QSortFilterProxyModel(parent),
   srcModel(src_mdl, visible_col, id_col, parent),
   ShowCheckboxes(false),
+  ShowUnchecked(true),
   Checkboxed_Column(visible_col),
   Id_Column(id_col),
   Service_Column(-1)
@@ -140,10 +142,17 @@ void QCheckboxFilterModel::setShowCheckboxes(bool checkable)
     if(checkable)
     {
       checkboxed_item->setData(state, Qt::CheckStateRole);
+      service_item->setData(true, Qt::DisplayRole);
       qDebug() << "state" << state;
     }
     else checkboxed_item->setData(QVariant(), Qt::CheckStateRole);
   }
+}
+
+
+void QCheckboxFilterModel::setShowUnchecked(bool state)
+{
+  ShowUnchecked = state;
 }
 
 
@@ -401,6 +410,8 @@ void QCheckboxFilterModel::showAllItems()
 {
   qDebug() << objectName() << __FUNCTION__;
 
+  ShowUnchecked = true;
+
   for(int r = 0; r < srcModel.rowCount(); r++)
   {
     srcModel.item(r, Service_Column)->setData(true, Qt::DisplayRole);
@@ -412,6 +423,8 @@ void QCheckboxFilterModel::showAllItems()
 void QCheckboxFilterModel::hideAllItems()
 {
   qDebug() << objectName() << __FUNCTION__;
+
+  ShowUnchecked = false;
 
   for(int r = 0; r < srcModel.rowCount(); r++)
   {
@@ -455,6 +468,8 @@ void QCheckboxFilterModel::toggleVisibilityReferenced(bool visible, const QMap<Q
       srcModel.item(r, Service_Column)->setData(visible? Qt::Checked: Qt::Unchecked, Qt::CheckStateRole);
 
       srcModel.item(r, Checkboxed_Column)->setEnabled(false);
+      if(ShowCheckboxes)
+        srcModel.item(r, Checkboxed_Column)->setCheckState(Qt::Checked);
     }
   }
 }
@@ -543,4 +558,16 @@ bool QCheckboxFilterModel::isItemChecked(int row) const
 {
   QModelIndex ind_src = mapToSource(index(row, 0));
   return (srcModel.item(ind_src.row(), Service_Column)->data(Qt::CheckStateRole) != Qt::Unchecked);
+}
+
+
+void QCheckboxFilterModel::hideUnchecked()
+{
+  for(int r = 0; r < srcModel.rowCount(); ++r)
+  {
+    QStandardItem* service_item = srcModel.item(r, Service_Column);
+
+    if(service_item->data(Qt::CheckStateRole).toBool() == Qt::Unchecked)
+      service_item->setData(false, Qt::DisplayRole);
+  }
 }
