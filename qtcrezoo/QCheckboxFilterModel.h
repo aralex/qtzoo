@@ -18,6 +18,7 @@ class QCheckboxFilterModel : public QSortFilterProxyModel
 
     bool ShowCheckboxes;
     bool ShowUnchecked;
+    QMap<QString, bool> VisibleItems;
 
     int Checkboxed_Column;
     int Id_Column;
@@ -34,12 +35,30 @@ class QCheckboxFilterModel : public QSortFilterProxyModel
       return numbers_str;
     }
 
+  public:
+    QCheckboxFilterModel(QAbstractItemModel* src_mdl, int visible_col, int id_col, QObject *parent = 0);
+
+    void setShowCheckboxes(bool checkable);
+
+    void toggleItems(bool checked, const QString &vals, bool locked);
+
+  signals:
+
+  public slots:
+    void on_srcModel_recreated(void);
+
+    void on_srcModel_dataChanged(const QModelIndex& topLeft, const QModelIndex& bottomRight, const QVector<int>& roles);
+
+};
+
+#endif // Q_CHECKBOX_FILTER_MODEL_H
+
+
+/*
+ *
     QList<int> strToIntList(const QString& str) const;
 
     void createServiceColumn();
-
-  public:
-    QCheckboxFilterModel(QAbstractItemModel* src_mdl, int visible_col, int id_col, QObject *parent = 0);
 
     int serviceColumn(){ return Service_Column; }
 
@@ -101,14 +120,4 @@ class QCheckboxFilterModel : public QSortFilterProxyModel
 
     const QAbstractItemModel* getSrcModel() const { return &srcModel; }
     void hideUnchecked();
-
-  signals:
-
-  public slots:
-    void on_srcModel_recreated(void);
-
-    void on_srcModel_dataChanged(const QModelIndex& topLeft, const QModelIndex& bottomRight, const QVector<int>& roles);
-
-};
-
-#endif // Q_CHECKBOX_FILTER_MODEL_H
+*/

@@ -75,17 +75,19 @@ TestChBFiltMainWindow::TestChBFiltMainWindow(QWidget *parent) :
   connect(ui->lvProdKinds->selectionModel(), SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
           this, SLOT(on_lvProdKinds_selection_changed(QItemSelection,QItemSelection)));
 
-  connect(mdlProdKinds, SIGNAL(dataChanged(QModelIndex,QModelIndex,QVector<int>)),
-          this, SLOT(on_mdlProdKinds_dataChanged(QModelIndex,QModelIndex,QVector<int>)));
+  if(connect(mdlProdKinds, SIGNAL(dataChanged(QModelIndex,QModelIndex,QVector<int>)),
+          this, SLOT(on_mdlProdKinds_dataChanged(QModelIndex,QModelIndex,QVector<int>))))
+    qDebug() << "connected!";
+  else qDebug() << "not connected!";
 
 //  connect(mdlProducts, SIGNAL(dataChanged(QModelIndex,QModelIndex,QVector<int>)),
 //          this, SLOT(on_mdlProducts_dataChanged(QModelIndex,QModelIndex,QVector<int>)));
 
-  mdlSpy1 = new QSpyModel(mdlProdKinds);
-  ui->tvSpy1->setModel(mdlSpy1);
+  //mdlSpy1 = new QSpyModel(mdlProdKinds);
+  //ui->tvSpy1->setModel(mdlSpy1);
 
-  mdlSpy2 = new QSpyModel(mdlProducts->getSrcModel());
-  ui->tvSpy2->setModel(mdlSpy2);
+  //mdlSpy2 = new QSpyModel(mdlProducts->getSrcModel());
+  //ui->tvSpy2->setModel(mdlSpy2);
 }
 
 
@@ -134,9 +136,11 @@ void TestChBFiltMainWindow::on_mdlDiets_selection_changed(const QItemSelection &
     foreach(const QModelIndex& ind, selected.indexes())
     {
       QString ids_prod_kinds = mdlDietsFull->index(ind.row(), COL_DIETS_PROD_KINDS).data(Qt::DisplayRole).toString();
+      qDebug() << "toggleVisibility mdlProdKinds" << ids_prod_kinds;
       mdlProdKinds->toggleVisibility(true, ids_prod_kinds);
 
       QString ids_products = mdlDietsFull->index(ind.row(), COL_DIETS_PRODUCTS).data(Qt::DisplayRole).toString();
+      qDebug() << "toggleVisibility mdlProducts" << ids_products;
       mdlProducts->toggleVisibility(true, ids_products);
     }
   }

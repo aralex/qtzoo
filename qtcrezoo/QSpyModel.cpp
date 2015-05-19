@@ -68,7 +68,7 @@ void QSpyModel::transferData(const QModelIndex &sourceIndex)
         qDebug() << "Wrong role value" << role << "in QSpyModel::transferData!";
     }
 
-    qDebug() << "res =" << res.toString();
+    //qDebug() << "res =" << res.toString();
     setData(index(r, c), res, role);
   }
 }
