@@ -49,19 +49,19 @@ TestChBFiltMainWindow::TestChBFiltMainWindow(QWidget *parent) :
 
   mdlDiets = new QCheckboxFilterModel(mdlDietsFull, COL_DIETS_VISIBLE, COL_DIETS_ID);
   mdlDiets->setObjectName("mdlDiets");
-  mdlDiets->setup();
+  mdlDiets->toggleAllItems(false, true, false);
   ui->lvDiets->setModel(mdlDiets);
   ui->lvDiets->setModelColumn(COL_DIETS_VISIBLE);
 
   mdlProdKinds = new QCheckboxFilterModel(mdlProdKindsFull, COL_PROD_KINDS_VISIBLE, COL_PROD_KINDS_ID);
   mdlProdKinds->setObjectName("mdlProdKinds");
-  mdlProdKinds->setup();
+  mdlProdKinds->toggleAllItems(false, true, false);
   ui->lvProdKinds->setModel(mdlProdKinds);
   ui->lvProdKinds->setModelColumn(COL_PROD_KINDS_VISIBLE);
 
   mdlProducts = new QCheckboxFilterModel(mdlProductsFull, COL_PRODUCTS_VISIBLE, COL_PRODUCTS_ID);
   mdlProducts->setObjectName("mdlProducts");
-  mdlProducts->setup();
+  mdlProducts->toggleAllItems(false, true, false);
   ui->lvProducts->setModel(mdlProducts);
   ui->lvProducts->setModelColumn(COL_PRODUCTS_VISIBLE);
 
@@ -100,15 +100,17 @@ TestChBFiltMainWindow::~TestChBFiltMainWindow()
 void TestChBFiltMainWindow::on_chbProdKinds_toggled(bool checked)
 {
   qDebug() << __FUNCTION__;
-  mdlProdKinds->setShowCheckboxes(checked);
-  mdlProducts->hideAllItems();
+  // !!!
+  //mdlProdKinds->setShowCheckboxes(checked);
+  //mdlProducts->hideAllItems();
 }
 
 
 void TestChBFiltMainWindow::on_chbProducts_toggled(bool checked)
 {
   qDebug() << __FUNCTION__;
-  mdlProducts->setShowCheckboxes(checked);
+  // !!!
+  //mdlProducts->setShowCheckboxes(checked);
 }
 
 void TestChBFiltMainWindow::on_lePatternDiets_textChanged(const QString &arg1)
@@ -130,59 +132,28 @@ void TestChBFiltMainWindow::on_mdlDiets_selection_changed(const QItemSelection &
 
   if(selected.count())
   {
-    mdlProdKinds->hideAllItems();
-    mdlProducts->hideAllItems();
+    mdlProducts->toggleAllItems(false, false, false);
+    mdlProdKinds->toggleAllItems(false, false, false);
 
     foreach(const QModelIndex& ind, selected.indexes())
     {
-      QString ids_prod_kinds = mdlDietsFull->index(ind.row(), COL_DIETS_PROD_KINDS).data(Qt::DisplayRole).toString();
-      qDebug() << "toggleVisibility mdlProdKinds" << ids_prod_kinds;
-      mdlProdKinds->toggleVisibility(true, ids_prod_kinds);
+      SelectedProducts = mdlDietsFull->index(ind.row(), COL_DIETS_PRODUCTS).data(Qt::DisplayRole).toString();
+      qDebug() << "toggleVisibility mdlProducts" << SelectedProducts;
+      mdlProducts->toggleItems(true, SelectedProducts, false);
 
-      QString ids_products = mdlDietsFull->index(ind.row(), COL_DIETS_PRODUCTS).data(Qt::DisplayRole).toString();
-      qDebug() << "toggleVisibility mdlProducts" << ids_products;
-      mdlProducts->toggleVisibility(true, ids_products);
+      SelectedProdKinds = mdlDietsFull->index(ind.row(), COL_DIETS_PROD_KINDS).data(Qt::DisplayRole).toString();
+      qDebug() << "toggleVisibility mdlProdKinds" << SelectedProdKinds;
+      mdlProdKinds->toggleItems(true, SelectedProdKinds, false);
     }
   }
   else
   {
-    mdlProdKinds->showAllItems();
-    mdlProducts->showAllItems();
+    mdlProdKinds->toggleAllItems(false, true, false);
+    mdlProducts->toggleAllItems(false, true, false);
   }
 
   mdlProdKinds->invalidate();
   mdlProducts->invalidate();
-
-
-  /*
-
-  int rows_selected_parent = ui->lvDiets->selectionModel()->selectedRows().count();
-  int rows_visible_child = mdlProdKinds->visibleItemsCount();
-
-  if(rows_selected_parent == 0)
-  {
-    // Если в главной таблице ничего не выделено, показываем все элементы дочерней.
-    mdlProdKinds->showAllItems();
-  }
-  else
-  {
-    // Если в главной таблице что-то выделено...
-    if((rows_visible_child == mdlProdKinds->rowCount()) && (deselected.count() == 0))
-    {
-      // Если были видны все элементы дочерней таблицы, и в родительской
-      // никакое выделение не снято...
-      mdlProdKinds->hideAllItems();
-      mdlProdKinds->toggleVisibilityReferenced(true, selected, COL_PROD_KINDS_ID);
-    }
-    else
-    {
-      mdlProdKinds->toggleVisibilityReferenced(false, deselected, COL_PROD_KINDS_ID);
-      mdlProdKinds->toggleVisibilityReferenced(true, selected, COL_PROD_KINDS_ID);
-    }
-  }
-
-  mdlProdKinds->invalidate();
-*/
 }
 
 
@@ -203,11 +174,11 @@ void TestChBFiltMainWindow::on_mdlProdKinds_dataChanged(const QModelIndex& topLe
 
   int top = topLeft.row();
   int bottom = bottomRight.row();
-  int sc = mdlProdKinds->serviceColumn();
+  //int sc = mdlProdKinds->serviceColumn();
 
   for(int i = top; i <= bottom; ++i)
   {
-    if((sc >= topLeft.column()) && (sc <= bottomRight.column()))
+    if((COL_PROD_KINDS_VISIBLE >= topLeft.column()) && (COL_PROD_KINDS_VISIBLE <= bottomRight.column()))
     {
       const QModelIndex ind = topLeft.model()->index(i, COL_PROD_KINDS_VISIBLE);
       QString id_str = ind.data(Qt::UserRole).toString();
@@ -216,11 +187,10 @@ void TestChBFiltMainWindow::on_mdlProdKinds_dataChanged(const QModelIndex& topLe
 
       qDebug() << "toggle(" << checked << ") ids" << id_str;
 
-      mdlProducts->toggleVisibilityReferenced(checked, id_str, COL_PRODUCTS_REF);
+      mdlProducts->toggleItemsReferenced(checked, id_str, checked, COL_PRODUCTS_REF);
       mdlProducts->invalidate();
     }
   }
-
 }
 
 
@@ -257,11 +227,11 @@ void TestChBFiltMainWindow::on_btnCancel_clicked()
 {
   buttonCancelClicked = true;
 
-  mdlProdKinds->hideUnchecked();
-  mdlProducts->hideUnchecked();
+  mdlProdKinds->toggleAllItems(false, false, false);
+  mdlProducts->toggleAllItems(false, false, false);
 
-  mdlProdKinds->setShowCheckboxes(false);
-  mdlProducts->setShowCheckboxes(false);
+  mdlProducts->toggleItems(true, SelectedProducts, false);
+  mdlProdKinds->toggleItems(true, SelectedProdKinds, false);
 
   ui->btnCancel->setEnabled(false);
   buttonCancelClicked = false;

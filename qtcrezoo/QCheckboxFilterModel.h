@@ -17,17 +17,12 @@ class QCheckboxFilterModel : public QSortFilterProxyModel
     QString Pattern;
 
     bool ShowCheckboxes;
-    bool ShowUnchecked;
     QMap<QString, bool> VisibleItems;
 
     int Checkboxed_Column;
     int Id_Column;
-    int Service_Column;
 
     virtual bool filterAcceptsRow(int source_row, const QModelIndex &ind) const;
-
-    QMap<QString, bool> strToMap(const QString& str) const;
-    QMap<QString, bool> rangeToMap(const QItemSelection& range, int column) const;
 
     QStringList strToList(const QString& str) const
     {
@@ -35,19 +30,44 @@ class QCheckboxFilterModel : public QSortFilterProxyModel
       return numbers_str;
     }
 
+    QMap<QString, bool> strToMap(const QString& str) const;
+
+    QStandardItem* actualItem(int row) const
+    {
+      return srcModel.item(row, Checkboxed_Column);
+    }
+
+    QString actualItemId(QStandardItem* item) const
+    {
+      return item? item->data(Qt::UserRole).toString(): QString();
+    }
+
+    bool isItemChecked(QStandardItem* item) const
+    {
+      return item? (item->data(Qt::CheckStateRole).toInt() != Qt::Unchecked): false;
+    }
+
+
+
   public:
     QCheckboxFilterModel(QAbstractItemModel* src_mdl, int visible_col, int id_col, QObject *parent = 0);
+
+    void setup(void);
 
     void setShowCheckboxes(bool checkable);
 
     void toggleItems(bool checked, const QString &vals, bool locked);
 
-  signals:
+    void toggleAllItems(bool checkable, bool checked, bool locked);
 
-  public slots:
-    void on_srcModel_recreated(void);
+    void toggleItemsReferenced(bool checked, const QString& vals, bool locked, int column);
 
-    void on_srcModel_dataChanged(const QModelIndex& topLeft, const QModelIndex& bottomRight, const QVector<int>& roles);
+    void brush(const QBrush& brush, const QString& val, int column);
+
+    bool isItemChecked(int row) const
+    {
+      return isItemChecked(actualItem(row));
+    }
 
 };
 
@@ -56,7 +76,13 @@ class QCheckboxFilterModel : public QSortFilterProxyModel
 
 /*
  *
+    int Service_Column;
+    bool ShowUnchecked;
     QList<int> strToIntList(const QString& str) const;
+
+    QMap<QString, bool> rangeToMap(const QItemSelection& range, int column) const;
+
+
 
     void createServiceColumn();
 
@@ -109,7 +135,6 @@ class QCheckboxFilterModel : public QSortFilterProxyModel
     void showTheseReferencedItems(const QString& vals, int column){ toggleVisibilityReferenced(true, vals, column); }
     void showTheseItemsOnly(const QString& vals);
 
-    void setup(void);
 
     void brush(const QBrush& brush, const QString& val, int column);
 
@@ -120,4 +145,12 @@ class QCheckboxFilterModel : public QSortFilterProxyModel
 
     const QAbstractItemModel* getSrcModel() const { return &srcModel; }
     void hideUnchecked();
+
+  signals:
+
+  public slots:
+    void on_srcModel_recreated(void);
+
+    void on_srcModel_dataChanged(const QModelIndex& topLeft, const QModelIndex& bottomRight, const QVector<int>& roles);
+
 */

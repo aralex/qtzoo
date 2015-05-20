@@ -59,6 +59,9 @@ class TestChBFiltMainWindow : public QMainWindow
 
     bool buttonCancelClicked;
 
+    QString SelectedProdKinds;
+    QString SelectedProducts;
+
 };
 
 #endif // TESTCHBFILTMAINWINDOW_H
