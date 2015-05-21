@@ -30,7 +30,8 @@ static const QRgb c_Highlited_List_Item_Bg(QRgb(qRgb(255, 249, 166)));
 TestChBFiltMainWindow::TestChBFiltMainWindow(QWidget *parent) :
   QMainWindow(parent),
   ui(new Ui::TestChBFiltMainWindow),
-  buttonCancelClicked(false)
+  buttonCancelClicked(false),
+  FreezeRefs(false)
 {
   ui->setupUi(this);
 
@@ -132,8 +133,10 @@ void TestChBFiltMainWindow::on_mdlDiets_selection_changed(const QItemSelection &
 
   if(selected.count())
   {
-    mdlProducts->toggleAllItems(false, false, false);
+    FreezeRefs = true;
     mdlProdKinds->toggleAllItems(false, false, false);
+    mdlProducts->toggleAllItems(false, false, false);
+    FreezeRefs = false;
 
     foreach(const QModelIndex& ind, selected.indexes())
     {
@@ -170,26 +173,38 @@ void TestChBFiltMainWindow::on_mdlProdKinds_dataChanged(const QModelIndex& topLe
 {
   qDebug() << __FUNCTION__ << topLeft.column() << bottomRight.column();
 
-  if(buttonCancelClicked) return;
+  if(buttonCancelClicked)
+  {
+    qDebug() << "return by buttonCancelClicked";
+    return;
+  }
+
+  if(FreezeRefs)
+  {
+    qDebug() << "return by FreezeRefs";
+    return;
+  }
+
+  if((topLeft.column() != COL_PROD_KINDS_VISIBLE) || (bottomRight.column() != COL_PROD_KINDS_VISIBLE))
+  {
+    qDebug() << "return by column:" << topLeft.column() << bottomRight.column() << COL_PROD_KINDS_VISIBLE;
+    return;
+  }
 
   int top = topLeft.row();
   int bottom = bottomRight.row();
-  //int sc = mdlProdKinds->serviceColumn();
 
   for(int i = top; i <= bottom; ++i)
   {
-    if((COL_PROD_KINDS_VISIBLE >= topLeft.column()) && (COL_PROD_KINDS_VISIBLE <= bottomRight.column()))
-    {
-      const QModelIndex ind = topLeft.model()->index(i, COL_PROD_KINDS_VISIBLE);
-      QString id_str = ind.data(Qt::UserRole).toString();
+    const QModelIndex ind = topLeft.model()->index(i, COL_PROD_KINDS_VISIBLE);
+    QString id_str = mdlProdKinds->itemId(i);
 
-      int checked = mdlProdKinds->isItemChecked(i);
+    int checked = mdlProdKinds->isItemChecked(i);
 
-      qDebug() << "toggle(" << checked << ") ids" << id_str;
+    qDebug() << "toggle(" << checked << ") ids" << id_str << ind.data(Qt::DisplayRole).toString();
 
-      mdlProducts->toggleItemsReferenced(checked, id_str, checked, COL_PRODUCTS_REF);
-      mdlProducts->invalidate();
-    }
+    mdlProducts->toggleItemsReferenced(checked, id_str, checked, COL_PRODUCTS_REF);
+    mdlProducts->invalidate();
   }
 }
 

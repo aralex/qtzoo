@@ -19,9 +19,8 @@ bool QCheckboxFilterModel::filterAcceptsRow(int source_row, const QModelIndex &i
   QStandardItem* item = actualItem(source_row);
 
 
-  bool Result = ShowCheckboxes?             // Если чек-боксы отображаются,
-        isItemChecked(item):                //   видны помеченные элементы.
-        VisibleItems[actualItemId(item)];   //   Иначе - перечисленные как видимые в VisibleItems.
+  // Если чек-боксы отображаются, видны помеченные элементы. Иначе - перечисленные как видимые в VisibleItems.
+  bool Result = ShowCheckboxes || VisibleItems[actualItemId(item)];
 
   if(Result && Pattern.length())
   {
@@ -44,6 +43,16 @@ QMap<QString, bool> QCheckboxFilterModel::strToMap(const QString &str) const
 }
 
 
+bool QCheckboxFilterModel::isItemChecked(QStandardItem *item) const
+{
+  bool res = ShowCheckboxes?
+        (item? (item->data(Qt::CheckStateRole).toInt() != Qt::Unchecked): false):
+        VisibleItems[actualItemId(item)];
+
+  return res;
+}
+
+
 void QCheckboxFilterModel::setup()
 {
   // Checking for a source model resize.
@@ -58,13 +67,10 @@ QCheckboxFilterModel::QCheckboxFilterModel(QAbstractItemModel *src_mdl, int visi
   QSortFilterProxyModel(parent),
   srcModel(src_mdl, visible_col, id_col, parent),
   ShowCheckboxes(false),
-//  ShowUnchecked(true),
   Checkboxed_Column(visible_col),
   Id_Column(id_col)
-//,  Service_Column(-1)
 {
   setSourceModel(&srcModel);
-  //createServiceColumn();
 }
 
 
@@ -101,6 +107,8 @@ void QCheckboxFilterModel::setShowCheckboxes(bool checkable)
       item->setData(QVariant(), Qt::CheckStateRole);
     }
   }
+
+  invalidate();
 }
 
 // Переключение состояния указанных элементов.
@@ -110,6 +118,7 @@ void QCheckboxFilterModel::toggleItems(bool checked, const QString &vals, bool l
 {
   QMap<QString, bool> ids = strToMap(vals);
 
+  /*
   if(checked)
   {
     // Show/check items.
@@ -134,7 +143,6 @@ void QCheckboxFilterModel::toggleItems(bool checked, const QString &vals, bool l
         }
 
         item->setEnabled(!locked);
-
       }
     }
   }
@@ -160,6 +168,34 @@ void QCheckboxFilterModel::toggleItems(bool checked, const QString &vals, bool l
         QModelIndex ind = index(r, Checkboxed_Column);
         emit dataChanged(ind, ind);
       }
+    }
+  }
+  */
+
+  for(int r = 0; r < srcModel.rowCount(); ++r)
+  {
+    QStandardItem* item = srcModel.item(r, Checkboxed_Column);
+    QString id = item->data(Qt::UserRole).toString();
+
+    if(ids.contains(id))
+    {
+      if(ShowCheckboxes)
+      {
+        item->setCheckable(true);
+        item->setData(checked? Qt::Checked: Qt::Unchecked, Qt::CheckStateRole);
+      }
+      else
+      {
+        item->setCheckable(false);
+        item->setData(QVariant(), Qt::CheckStateRole);
+
+        VisibleItems[id] = checked;
+
+        QModelIndex ind = index(r, Checkboxed_Column);
+        emit dataChanged(ind, ind);
+      }
+
+      item->setEnabled(!locked);
     }
   }
 }
@@ -191,9 +227,39 @@ void QCheckboxFilterModel::toggleAllItems(bool checkable, bool checked, bool loc
 }
 
 
-void QCheckboxFilterModel::toggleItemsReferenced(bool checked, const QString &vals, bool locked, int column)
+void QCheckboxFilterModel::toggleItemsReferenced(bool checked, const QString &ids, bool locked, int column)
 {
+  qDebug() << objectName() << "toggleItemsReferenced";
 
+  for(int r = 0; r < srcModel.rowCount(); ++r)
+  {
+    QStandardItem* item = actualItem(r);
+    QString id = actualItemId(item);
+
+    QString ref_id = srcModel.item(r, column)->data(Qt::DisplayRole).toString();
+
+    qDebug() << "id:" << id << "ref_id:" << ref_id << srcModel.item(r, 1)->data(Qt::DisplayRole).toString();
+
+    if(ids.contains(ref_id))
+    {
+      qDebug() << "Present!";
+
+      if(ShowCheckboxes)
+      {
+        item->setCheckable(true);
+        item->setData(checked? Qt::Checked: Qt::Unchecked, Qt::CheckStateRole);
+      }
+      else
+      {
+        VisibleItems[id] = checked;
+
+        QModelIndex ind = index(r, Checkboxed_Column);
+        emit dataChanged(ind, ind);
+      }
+
+      item->setEnabled(!locked);
+    }
+  }
 }
 
 
@@ -205,6 +271,24 @@ void QCheckboxFilterModel::brush(const QBrush& brush, const QString& val, int co
     if(id == val)
       actualItem(r)->setData(brush, Qt::BackgroundRole);
   }
+}
+
+
+QString QCheckboxFilterModel::itemId(int row) const
+{
+  qDebug() << objectName() << "itemId";
+
+  QString id;
+
+  if(row >= 0)
+  {
+    QModelIndex src_ind = mapToSource(index(row, Checkboxed_Column));
+    id = src_ind.data(Qt::UserRole).toString();
+
+    qDebug() << row << "->" << src_ind.row();
+  }
+
+  return id;
 }
 
 

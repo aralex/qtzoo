@@ -42,11 +42,7 @@ class QCheckboxFilterModel : public QSortFilterProxyModel
       return item? item->data(Qt::UserRole).toString(): QString();
     }
 
-    bool isItemChecked(QStandardItem* item) const
-    {
-      return item? (item->data(Qt::CheckStateRole).toInt() != Qt::Unchecked): false;
-    }
-
+    bool isItemChecked(QStandardItem* item) const;
 
 
   public:
@@ -60,7 +56,7 @@ class QCheckboxFilterModel : public QSortFilterProxyModel
 
     void toggleAllItems(bool checkable, bool checked, bool locked);
 
-    void toggleItemsReferenced(bool checked, const QString& vals, bool locked, int column);
+    void toggleItemsReferenced(bool checked, const QString& ids, bool locked, int column);
 
     void brush(const QBrush& brush, const QString& val, int column);
 
@@ -68,6 +64,8 @@ class QCheckboxFilterModel : public QSortFilterProxyModel
     {
       return isItemChecked(actualItem(row));
     }
+
+    QString itemId(int row) const;
 
 };
 

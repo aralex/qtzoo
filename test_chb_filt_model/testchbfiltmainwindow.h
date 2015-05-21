@@ -58,6 +58,7 @@ class TestChBFiltMainWindow : public QMainWindow
     QSpyModel* mdlSpy2;
 
     bool buttonCancelClicked;
+    bool FreezeRefs;
 
     QString SelectedProdKinds;
     QString SelectedProducts;
