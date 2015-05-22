@@ -171,7 +171,7 @@ void TestChBFiltMainWindow::on_lvDiets_doubleClicked(const QModelIndex &index)
 
 void TestChBFiltMainWindow::on_mdlProdKinds_dataChanged(const QModelIndex& topLeft, const QModelIndex& bottomRight, const QVector<int>& roles)
 {
-  qDebug() << __FUNCTION__ << topLeft.column() << bottomRight.column();
+  qDebug() << __FUNCTION__ << QString("(%0, %1)-(%2, %3)").arg(topLeft.row()).arg(topLeft.column()).arg(bottomRight.row()).arg(bottomRight.column()) << roles;
 
   if(buttonCancelClicked)
   {
@@ -196,12 +196,11 @@ void TestChBFiltMainWindow::on_mdlProdKinds_dataChanged(const QModelIndex& topLe
 
   for(int i = top; i <= bottom; ++i)
   {
-    const QModelIndex ind = topLeft.model()->index(i, COL_PROD_KINDS_VISIBLE);
-    QString id_str = mdlProdKinds->itemId(i);
+    QString id_str = mdlProdKinds->sourceItemData(i, COL_PROD_KINDS_VISIBLE, Qt::UserRole);
 
     int checked = mdlProdKinds->isItemChecked(i);
 
-    qDebug() << "toggle(" << checked << ") ids" << id_str << ind.data(Qt::DisplayRole).toString();
+    qDebug() << "toggle(" << checked << ") ids" << id_str;
 
     mdlProducts->toggleItemsReferenced(checked, id_str, checked, COL_PRODUCTS_REF);
     mdlProducts->invalidate();
@@ -237,18 +236,19 @@ void TestChBFiltMainWindow::on_lePatternProducts_textChanged(const QString &arg1
 }
 
 
-
 void TestChBFiltMainWindow::on_btnCancel_clicked()
 {
-  buttonCancelClicked = true;
-
+  FreezeRefs = true;
   mdlProdKinds->toggleAllItems(false, false, false);
   mdlProducts->toggleAllItems(false, false, false);
+  FreezeRefs = false;
+
+  qDebug() << "SelectedProdKinds" << SelectedProdKinds;
+  qDebug() << "SelectedProducts" << SelectedProducts;
 
   mdlProducts->toggleItems(true, SelectedProducts, false);
   mdlProdKinds->toggleItems(true, SelectedProdKinds, false);
 
   ui->btnCancel->setEnabled(false);
-  buttonCancelClicked = false;
   ui->lvDiets->setEnabled(true);
 }

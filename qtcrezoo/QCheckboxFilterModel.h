@@ -44,6 +44,8 @@ class QCheckboxFilterModel : public QSortFilterProxyModel
 
     bool isItemChecked(QStandardItem* item) const;
 
+    void setItemState(QStandardItem *item, bool checked, bool locked);
+
 
   public:
     QCheckboxFilterModel(QAbstractItemModel* src_mdl, int visible_col, int id_col, QObject *parent = 0);
@@ -65,7 +67,7 @@ class QCheckboxFilterModel : public QSortFilterProxyModel
       return isItemChecked(actualItem(row));
     }
 
-    QString itemId(int row) const;
+    QString sourceItemData(int row, int column, int role) const;
 
 };
 
