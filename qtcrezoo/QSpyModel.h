@@ -1,10 +1,10 @@
 #ifndef QSPYMODEL_H
 #define QSPYMODEL_H
 
-#include "QMirrorModel.h"
+#include "qMirrorModel.h"
 
 
-class QSpyModel : public QMirrorModel
+class qSpyModel : public qMirrorModel
 {
     Q_OBJECT
 
@@ -14,9 +14,9 @@ class QSpyModel : public QMirrorModel
     void transferData(const QModelIndex &ind);
 
   public:
-    QSpyModel(const QAbstractItemModel* src_model,  QObject *parent = 0);
+    qSpyModel(const QAbstractItemModel* src_model,  QObject *parent = 0);
 
-    virtual ~QSpyModel();
+    virtual ~qSpyModel();
 
 };
 

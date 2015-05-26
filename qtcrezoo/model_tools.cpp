@@ -1,10 +1,10 @@
 #include "model_tools.h"
-#include "QTextFile.h"
+#include "qTextFile.h"
 
 
 void LoadCsvData(QStandardItemModel* model, const QString& file_name, const QString& separator)
 {
-  QTextFile f(file_name);
+  qTextFile f(file_name);
   QString str;
   int n = 0;
 

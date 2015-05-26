@@ -1,7 +1,7 @@
-#include "QTextFile.h"
+#include "qTextFile.h"
 
 
-QTextFile::QTextFile(const QString &file_name, QObject *parent) :
+qTextFile::qTextFile(const QString &file_name, QObject *parent) :
   QFile(file_name, parent),
   ts(this)
 {
@@ -9,14 +9,14 @@ QTextFile::QTextFile(const QString &file_name, QObject *parent) :
 }
 
 
-bool QTextFile::readLine(QString &str, qint64 maxlen)
+bool qTextFile::readLine(QString &str, qint64 maxlen)
 {
   str = ts.readLine(maxlen);
   return(!str.isNull());
 }
 
 
-bool QTextFile::readNonemptyLine(QString &str, qint64 maxlen)
+bool qTextFile::readNonemptyLine(QString &str, qint64 maxlen)
 {
   QString s;
 

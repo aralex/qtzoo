@@ -3,8 +3,8 @@
 
 #include <QMainWindow>
 #include <QStandardItemModel>
-#include "QCheckboxFilterModel.h"
-#include "QSpyModel.h"
+#include "qCheckboxFilterModel.h"
+#include "qSpyModel.h"
 
 #include "model_tools.h"
 
@@ -23,9 +23,9 @@ class TestChBFiltMainWindow : public QMainWindow
 
   private slots:
 
-    void on_chbProdKinds_toggled(bool checked);
+    void on_chbProdKinds_stateChanged(int ch_state);
 
-    void on_chbProducts_toggled(bool checked);
+    void on_chbProducts_stateChanged(int ch_state);
 
     void on_mdlProdKinds_dataChanged(const QModelIndex & topLeft, const QModelIndex & bottomRight, const QVector<int> & roles = QVector<int>());
 
@@ -43,6 +43,10 @@ class TestChBFiltMainWindow : public QMainWindow
 
     void on_btnCancel_clicked();
 
+    void on_chbProdKinds_pressed();
+
+    void on_chbProducts_pressed();
+
   private:
     Ui::TestChBFiltMainWindow *ui;
 
@@ -50,18 +54,21 @@ class TestChBFiltMainWindow : public QMainWindow
     QStandardItemModel* mdlProdKindsFull;
     QStandardItemModel* mdlProductsFull;
 
-    QCheckboxFilterModel* mdlDiets;
-    QCheckboxFilterModel* mdlProdKinds;
-    QCheckboxFilterModel* mdlProducts;
+    qCheckboxFilterModel* mdlDiets;
+    qCheckboxFilterModel* mdlProdKinds;
+    qCheckboxFilterModel* mdlProducts;
 
-    QSpyModel* mdlSpy1;
-    QSpyModel* mdlSpy2;
+    qSpyModel* mdlSpy1;
+    qSpyModel* mdlSpy2;
 
     bool buttonCancelClicked;
     bool FreezeRefs;
 
     QString SelectedProdKinds;
     QString SelectedProducts;
+
+    bool ChBProdKindsToggledManually;
+    bool ChBProductsToggledManually;
 
 };
 

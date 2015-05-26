@@ -11,32 +11,32 @@ TEMPLATE = lib
 CONFIG += staticlib
 
 SOURCES += \
-    QCheckboxFilterModel.cpp \
-    QColumnByName.cpp \
-    QCSString.cpp \
-    QDBQueryModel.cpp \
-    QDict.cpp \
-    QFileName.cpp \
-    QMirrorModel.cpp \
-    QSelectProxy.cpp \
-    QShadowDataModel.cpp \
-    QTextFile.cpp \
     model_tools.cpp \
-    QSpyModel.cpp
+    qCheckboxFilterModel.cpp \
+    qCSString.cpp \
+    qColumnByName.cpp \
+    qDBQueryModel.cpp \
+    qDict.cpp \
+    qTextFile.cpp \
+    qFileName.cpp \
+    qMirrorModel.cpp \
+    qSelectProxy.cpp \
+    qShadowDataModel.cpp \
+    qSpyModel.cpp
 
 HEADERS += \
-    QCheckboxFilterModel.h \
-    QColumnByName.h \
-    QCSString.h \
-    QDBQueryModel.h \
-    QDict.h \
-    QFileName.h \
-    QMirrorModel.h \
-    QSelectProxy.h \
-    QShadowDataModel.h \
-    QTextFile.h \
     model_tools.h \
-    QSpyModel.h
+    qCheckboxFilterModel.h \
+    qCSString.h \
+    qColumnByName.h \
+    qDBQueryModel.h \
+    qDict.h \
+    qTextFile.h \
+    qFileName.h \
+    qMirrorModel.h \
+    qSelectProxy.h \
+    qShadowDataModel.h \
+    qSpyModel.h
 
 unix {
     target.path = /usr/lib

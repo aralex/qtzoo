@@ -1,10 +1,10 @@
-#include "QSpyModel.h"
-#include "QCSString.h"
+#include "qSpyModel.h"
+#include "qCSString.h"
 
 #include <QDebug>
 
 
-void QSpyModel::recreate()
+void qSpyModel::recreate()
 {
   clear();
 
@@ -28,7 +28,7 @@ void QSpyModel::recreate()
 }
 
 
-void QSpyModel::transferData(const QModelIndex &sourceIndex)
+void qSpyModel::transferData(const QModelIndex &sourceIndex)
 {
   QVariant res;
   const int r = sourceIndex.row();
@@ -43,7 +43,7 @@ void QSpyModel::transferData(const QModelIndex &sourceIndex)
       case Qt::DisplayRole:
       case Qt::EditRole:
       {
-        QCSString s("", ", ");
+        qCSString s("", ", ");
         s.append(sourceIndex.data(Qt::DisplayRole).toString());
         s.append(sourceIndex.data(Qt::CheckStateRole).toString());
         s.append(sourceIndex.data(Qt::DecorationRole).toString());
@@ -74,13 +74,13 @@ void QSpyModel::transferData(const QModelIndex &sourceIndex)
 }
 
 
-QSpyModel::QSpyModel(const QAbstractItemModel *src_model, QObject *parent):
-  QMirrorModel(src_model, parent)
+qSpyModel::qSpyModel(const QAbstractItemModel *src_model, QObject *parent):
+  qMirrorModel(src_model, parent)
 {
   recreate();
 }
 
 
-QSpyModel::~QSpyModel()
+qSpyModel::~qSpyModel()
 {
 }

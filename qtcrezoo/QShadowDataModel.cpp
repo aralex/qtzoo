@@ -1,4 +1,4 @@
-#include "QShadowDataModel.h"
+#include "qShadowDataModel.h"
 
 
 void QShadowDataModel::makeShadow()
@@ -13,13 +13,13 @@ void QShadowDataModel::makeShadow()
 
 void QShadowDataModel::recreate()
 {
-  QMirrorModel::recreate();
+  qMirrorModel::recreate();
   makeShadow();
 }
 
 
 QShadowDataModel::QShadowDataModel(QAbstractItemModel *src_mdl, int target_col, int shadow_col, QObject *parent) :
-  QMirrorModel(src_mdl, parent),
+  qMirrorModel(src_mdl, parent),
   targetColumn(target_col),
   shadowColumn(shadow_col)
 {

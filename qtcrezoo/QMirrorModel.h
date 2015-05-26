@@ -4,7 +4,7 @@
 #include <QStandardItemModel>
 
 
-class QMirrorModel: public QStandardItemModel
+class qMirrorModel: public QStandardItemModel
 {
     Q_OBJECT
 
@@ -12,7 +12,7 @@ class QMirrorModel: public QStandardItemModel
     const QAbstractItemModel* srcModel;
 
   public:
-    explicit QMirrorModel(const QAbstractItemModel *src_mdl, QObject *parent = 0);
+    explicit qMirrorModel(const QAbstractItemModel *src_mdl, QObject *parent = 0);
 
     virtual void recreate(void);
 

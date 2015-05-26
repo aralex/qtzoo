@@ -31,7 +31,8 @@ TestChBFiltMainWindow::TestChBFiltMainWindow(QWidget *parent) :
   QMainWindow(parent),
   ui(new Ui::TestChBFiltMainWindow),
   buttonCancelClicked(false),
-  FreezeRefs(false)
+  FreezeRefs(false),
+  ChBProdKindsToggledManually(false)
 {
   ui->setupUi(this);
 
@@ -48,19 +49,19 @@ TestChBFiltMainWindow::TestChBFiltMainWindow(QWidget *parent) :
   ui->tvDietsFull->resizeRowsToContents();
   ui->tvDietsFull->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Stretch);
 
-  mdlDiets = new QCheckboxFilterModel(mdlDietsFull, COL_DIETS_VISIBLE, COL_DIETS_ID);
+  mdlDiets = new qCheckboxFilterModel(mdlDietsFull, COL_DIETS_VISIBLE, COL_DIETS_ID);
   mdlDiets->setObjectName("mdlDiets");
   mdlDiets->toggleAllItems(false, true, false);
   ui->lvDiets->setModel(mdlDiets);
   ui->lvDiets->setModelColumn(COL_DIETS_VISIBLE);
 
-  mdlProdKinds = new QCheckboxFilterModel(mdlProdKindsFull, COL_PROD_KINDS_VISIBLE, COL_PROD_KINDS_ID);
+  mdlProdKinds = new qCheckboxFilterModel(mdlProdKindsFull, COL_PROD_KINDS_VISIBLE, COL_PROD_KINDS_ID);
   mdlProdKinds->setObjectName("mdlProdKinds");
   mdlProdKinds->toggleAllItems(false, true, false);
   ui->lvProdKinds->setModel(mdlProdKinds);
   ui->lvProdKinds->setModelColumn(COL_PROD_KINDS_VISIBLE);
 
-  mdlProducts = new QCheckboxFilterModel(mdlProductsFull, COL_PRODUCTS_VISIBLE, COL_PRODUCTS_ID);
+  mdlProducts = new qCheckboxFilterModel(mdlProductsFull, COL_PRODUCTS_VISIBLE, COL_PRODUCTS_ID);
   mdlProducts->setObjectName("mdlProducts");
   mdlProducts->toggleAllItems(false, true, false);
   ui->lvProducts->setModel(mdlProducts);
@@ -98,21 +99,57 @@ TestChBFiltMainWindow::~TestChBFiltMainWindow()
 }
 
 
-void TestChBFiltMainWindow::on_chbProdKinds_toggled(bool checked)
+void TestChBFiltMainWindow::on_chbProdKinds_stateChanged(int ch_state)
 {
   qDebug() << __FUNCTION__;
-  // !!!
-  //mdlProdKinds->setShowCheckboxes(checked);
-  //mdlProducts->hideAllItems();
+
+  if(!ChBProdKindsToggledManually || !mdlProdKinds->isCheckboxesVisible()) return;
+
+  if(ch_state == Qt::Checked)
+  {
+    ChBProdKindsToggledManually = false;
+    mdlProdKinds->toggleAllItems(true, true, false);
+  }
+  else if(ch_state == Qt::PartiallyChecked)
+  {
+    ui->chbProdKinds->setCheckState(Qt::Checked);
+  }
+  else
+  {
+    ChBProdKindsToggledManually = false;
+    mdlProdKinds->toggleAllItems(true, false, false);
+  }
 }
 
 
-void TestChBFiltMainWindow::on_chbProducts_toggled(bool checked)
+void TestChBFiltMainWindow::on_chbProducts_stateChanged(int ch_state)
 {
   qDebug() << __FUNCTION__;
-  // !!!
-  //mdlProducts->setShowCheckboxes(checked);
+
+  if(!ChBProductsToggledManually || !mdlProducts->isCheckboxesVisible()) return;
+
+  if(ch_state == Qt::Checked)
+  {
+    ChBProductsToggledManually = false;
+    mdlProducts->toggleAllItems(true, true, false, false);
+
+    if(mdlProducts->genericCheckState() == Qt::PartiallyChecked)
+      ui->chbProducts->setCheckState(Qt::PartiallyChecked);
+  }
+  else if(ch_state == Qt::PartiallyChecked)
+  {
+    ui->chbProducts->setCheckState(Qt::Checked);
+  }
+  else
+  {
+    ChBProductsToggledManually = false;
+    mdlProducts->toggleAllItems(true, false, false, false);
+
+    if(mdlProducts->genericCheckState() == Qt::PartiallyChecked)
+      ui->chbProducts->setCheckState(Qt::PartiallyChecked);
+  }
 }
+
 
 void TestChBFiltMainWindow::on_lePatternDiets_textChanged(const QString &arg1)
 {
@@ -122,6 +159,8 @@ void TestChBFiltMainWindow::on_lePatternDiets_textChanged(const QString &arg1)
 void TestChBFiltMainWindow::on_lePatternProdKinds_textChanged(const QString &arg1)
 {
   qDebug() << __FUNCTION__;
+  mdlProdKinds->setPattern(arg1);
+  mdlProdKinds->invalidate();
 }
 
 
@@ -205,6 +244,8 @@ void TestChBFiltMainWindow::on_mdlProdKinds_dataChanged(const QModelIndex& topLe
     mdlProducts->toggleItemsReferenced(checked, id_str, checked, COL_PRODUCTS_REF);
     mdlProducts->invalidate();
   }
+
+  ui->chbProdKinds->setCheckState(mdlProdKinds->genericCheckState());
 }
 
 
@@ -232,7 +273,9 @@ void TestChBFiltMainWindow::on_lvProdKinds_selection_changed(const QItemSelectio
 
 void TestChBFiltMainWindow::on_lePatternProducts_textChanged(const QString &arg1)
 {
-  qDebug() << __FUNCTION__;
+  qDebug() << __FUNCTION__;  
+  mdlProducts->setPattern(arg1);
+  mdlProducts->invalidate();
 }
 
 
@@ -251,4 +294,18 @@ void TestChBFiltMainWindow::on_btnCancel_clicked()
 
   ui->btnCancel->setEnabled(false);
   ui->lvDiets->setEnabled(true);
+}
+
+
+void TestChBFiltMainWindow::on_chbProdKinds_pressed()
+{
+  qDebug() << __FUNCTION__;
+  ChBProdKindsToggledManually = true;
+}
+
+
+void TestChBFiltMainWindow::on_chbProducts_pressed()
+{
+  qDebug() << __FUNCTION__;
+  ChBProductsToggledManually = true;
 }

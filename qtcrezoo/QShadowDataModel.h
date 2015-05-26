@@ -1,13 +1,13 @@
 #ifndef QSHADOWDATAMODEL_H
 #define QSHADOWDATAMODEL_H
 
-#include "QMirrorModel.h"
+#include "qMirrorModel.h"
 
 /*
 The model stores a value from shadowColumn/DisplayRole in targetColumn/UserRole.
 */
 
-class QShadowDataModel : public QMirrorModel
+class QShadowDataModel : public qMirrorModel
 {
     Q_OBJECT
 

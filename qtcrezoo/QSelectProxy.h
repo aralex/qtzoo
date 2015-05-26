@@ -18,13 +18,13 @@
 #include <QString>
 #include <QMap>
 
-#include "QColumnByName.h"
+#include "qColumnByName.h"
 
 
-class QSelectProxy : public QAbstractProxyModel, public QColumnByName
+class qSelectProxy : public QAbstractProxyModel, public qColumnByName
 {
   public:
-    explicit QSelectProxy(const QString& Visible_Columns, QObject *parent);
+    explicit qSelectProxy(const QString& Visible_Columns, QObject *parent);
 
     virtual void setSourceModel(QAbstractItemModel *sourceModel);
 

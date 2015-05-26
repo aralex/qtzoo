@@ -11,12 +11,12 @@
 #include <QRegExp>
 #include <QDebug>
 
-#include "QSelectProxy.h"
+#include "qSelectProxy.h"
 
 
-QSelectProxy::QSelectProxy(const QString &Visible_Columns_List, QObject *parent=0):
+qSelectProxy::qSelectProxy(const QString &Visible_Columns_List, QObject *parent=0):
   QAbstractProxyModel(parent),
-  QColumnByName(this)
+  qColumnByName(this)
 {
   QString cols(Visible_Columns_List);
   Visible_Columns = cols.split(QRegExp("\\s*,\\s*"));
@@ -25,7 +25,7 @@ QSelectProxy::QSelectProxy(const QString &Visible_Columns_List, QObject *parent=
 }
 
 
-void QSelectProxy::setSourceModel(QAbstractItemModel *sourceModel)
+void qSelectProxy::setSourceModel(QAbstractItemModel *sourceModel)
 {
   int Src_Column_Count = sourceModel->columnCount();
   int N_Dest_Col;
@@ -37,7 +37,7 @@ void QSelectProxy::setSourceModel(QAbstractItemModel *sourceModel)
     Col_Name = sourceModel->headerData(i, Qt::Horizontal).toString();
     N_Dest_Col = Visible_Columns.indexOf(Col_Name);
     Column_Number[Col_Name] = N_Dest_Col;
-    Set_Column_Number(Col_Name, N_Dest_Col);
+    setColumnNumber(Col_Name, N_Dest_Col);
 
     //qDebug() << "Column" << Col_Name << "(" << N_Dest_Col << ")";
 
@@ -55,27 +55,27 @@ void QSelectProxy::setSourceModel(QAbstractItemModel *sourceModel)
 }
 
 
-int QSelectProxy::rowCount(const QModelIndex &) const
+int qSelectProxy::rowCount(const QModelIndex &) const
 {
   //qDebug() << "rowCount" << sourceModel()->rowCount();
   return sourceModel()->rowCount();
 }
 
 
-int QSelectProxy::columnCount(const QModelIndex &) const
+int qSelectProxy::columnCount(const QModelIndex &) const
 {
   //qDebug() << "columnCount" << Column_Count;
   return Column_Count;
 }
 
 
-QModelIndex QSelectProxy::parent(const QModelIndex &) const
+QModelIndex qSelectProxy::parent(const QModelIndex &) const
 {
   return QModelIndex();
 }
 
 
-QModelIndex QSelectProxy::index(int row, int column, const QModelIndex &) const
+QModelIndex qSelectProxy::index(int row, int column, const QModelIndex &) const
 {
   //qDebug() << "index " << row << column;
   if(
@@ -87,7 +87,7 @@ QModelIndex QSelectProxy::index(int row, int column, const QModelIndex &) const
 }
 
 
-QModelIndex QSelectProxy::mapFromSource(const QModelIndex &sourceIndex) const
+QModelIndex qSelectProxy::mapFromSource(const QModelIndex &sourceIndex) const
 {
   //qDebug() << "mapFromSource " << sourceIndex.row() << sourceIndex.column();
 
@@ -99,7 +99,7 @@ QModelIndex QSelectProxy::mapFromSource(const QModelIndex &sourceIndex) const
 }
 
 
-QModelIndex QSelectProxy::mapToSource(const QModelIndex &proxyIndex) const
+QModelIndex qSelectProxy::mapToSource(const QModelIndex &proxyIndex) const
 {
   //qDebug() << "mapToSource " << proxyIndex.row() << proxyIndex.column();
 
@@ -111,7 +111,7 @@ QModelIndex QSelectProxy::mapToSource(const QModelIndex &proxyIndex) const
 }
 
 
-QVariant QSelectProxy::headerData(int section, Qt::Orientation orientation, int role) const
+QVariant qSelectProxy::headerData(int section, Qt::Orientation orientation, int role) const
 {
   if(role == Qt::DisplayRole)
   {
@@ -131,7 +131,7 @@ QVariant QSelectProxy::headerData(int section, Qt::Orientation orientation, int 
 }
 
 
-bool QSelectProxy::setHeaderData(int section, Qt::Orientation orientation, const QVariant &value, int role)
+bool qSelectProxy::setHeaderData(int section, Qt::Orientation orientation, const QVariant &value, int role)
 {
   switch(orientation)
   {
@@ -149,7 +149,7 @@ bool QSelectProxy::setHeaderData(int section, Qt::Orientation orientation, const
 }
 
 
-void QSelectProxy::sort(int column, Qt::SortOrder order)
+void qSelectProxy::sort(int column, Qt::SortOrder order)
 {
   int orig_column = Orig_Column[column];
   if(orig_column >= 0)
@@ -160,7 +160,7 @@ void QSelectProxy::sort(int column, Qt::SortOrder order)
 }
 
 
-void QSelectProxy::on_src_model_changed()
+void qSelectProxy::on_src_model_changed()
 {
   qDebug() << "QSelectProxy::on_src_model_changed";
   emit dataChanged(index(0, 0), index(rowCount() - 1, columnCount() - 1));
