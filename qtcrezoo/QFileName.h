@@ -4,24 +4,24 @@
 #include <QString>
 
 
-class QFileName : public QString
+class qFileName : public QString
 {
   public:
-    QFileName();
+    qFileName();
 
-    QFileName(const QString& file_name);
+    qFileName(const QString& file_name);
 
-    QFileName(const QString& file_path, const QString& file_name);
+    qFileName(const QString& file_path, const QString& file_name);
 
-    void Set(const QString& file_path, const QString& file_name);
+    void set(const QString& file_path, const QString& file_name);
 
-    const QFileName operator <<(const QString &file_name) const;
+    const qFileName operator <<(const QString &file_name) const;
 
-    const QFileName& operator <<=(const QString &file_name);
+    const qFileName& operator <<=(const QString &file_name);
 
-    QFileName baseName() const;
+    qFileName baseName() const;
 
-    QFileName fileName() const;
+    qFileName fileName() const;
 };
 
 

@@ -5,7 +5,7 @@
 #include <QtSql/QSqlQuery>
 #include <QSemaphore>
 
-#include "QColumnByName.h"
+#include "qColumnByName.h"
 
 
 #define c_No_Data           "<нет данных>"
@@ -14,14 +14,14 @@
 extern QSemaphore DB_Sem;
 
 
-class QDBQueryModel : public QStandardItemModel, public QColumnByName
+class qDBQueryModel : public QStandardItemModel, public qColumnByName
 {
   Q_OBJECT
 
   protected:
     QString Query_Str;
 
-    void Set_N_Get(const QString& SQL)
+    void setAndGet(const QString& SQL)
     {
       if(SQL.size())
       {
@@ -30,31 +30,31 @@ class QDBQueryModel : public QStandardItemModel, public QColumnByName
       }
     }
 
-    QString Get_SP_Name(void) const;
+    QString getSPName(void) const;
 
-    void Get_Column_Names(const QSqlRecord& rec);
+    void getColumnNames(const QSqlRecord& rec);
 
-    QString Unquote(const QString& str) const;
+    QString unquote(const QString& str) const;
 
   public:
-    QDBQueryModel(const char * SQL = 0, QObject *parent = 0):
+    qDBQueryModel(const char * SQL = 0, QObject *parent = 0):
       QStandardItemModel(parent),
-      QColumnByName(this)
+      qColumnByName(this)
     {
-      Set_N_Get(SQL);
+      setAndGet(SQL);
     }
 
 
-    QDBQueryModel(const QString& SQL, QObject *parent = 0):
+    qDBQueryModel(const QString& SQL, QObject *parent = 0):
       QStandardItemModel(parent),
-      QColumnByName(this)
+      qColumnByName(this)
     {
-      Set_N_Get(SQL);
+      setAndGet(SQL);
     }
 
-    QDBQueryModel(const QString& SQL, bool Do_Get_Data, QObject *parent = 0):
+    qDBQueryModel(const QString& SQL, bool Do_Get_Data, QObject *parent = 0):
       QStandardItemModel(parent),
-      QColumnByName(this)
+      qColumnByName(this)
     {
       if(SQL.size()) Query_Str = SQL;
       if(Do_Get_Data) getData();
@@ -62,9 +62,9 @@ class QDBQueryModel : public QStandardItemModel, public QColumnByName
 
     virtual QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
 
-    void Load(const QString& fname);
+    void load(const QString& fname);
 
-    void Save(const QString& fname) const;
+    void save(const QString& fname) const;
 
     virtual void getData(void);
     virtual void getData(QString New_Query_Str);

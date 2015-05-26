@@ -1,5 +1,5 @@
-#include "QCSString.h"
+#include "qCSString.h"
 
-QCSString::QCSString()
+qCSString::qCSString()
 {
 }

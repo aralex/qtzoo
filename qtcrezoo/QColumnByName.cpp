@@ -1,42 +1,42 @@
 #include <QDebug>
 #include <QStringList>
 
-#include "QColumnByName.h"
+#include "qColumnByName.h"
 
 
-QColumnByName::QColumnByName(QAbstractItemModel *mdl):
+qColumnByName::qColumnByName(QAbstractItemModel *mdl):
   Model(mdl)
 {
 }
 
 
-int QColumnByName::Get_Column_Number(const QString &col_name) const
+int qColumnByName::getColumnNumber(const QString &col_name) const
 {
   return(Column_Number.contains(col_name)? Column_Number[col_name]: -1);
 }
 
 
-void QColumnByName::Set_Column_Number(const QString &col_name, int column)
+void qColumnByName::setColumnNumber(const QString &col_name, int column)
 {
   Column_Number[col_name] = column;
 }
 
 
-QVariant QColumnByName::Get_Data(int row, const QString &col_name, Qt::ItemDataRole role) const
+QVariant qColumnByName::getData(int row, const QString &col_name, Qt::ItemDataRole role) const
 {
-  int column = Get_Column_Number(col_name);
+  int column = getColumnNumber(col_name);
   return(Model->index(row, column).data(role));
 }
 
 
-void QColumnByName::Translate_Headers(const QString &New_Headers, const QString &Splitter)
+void qColumnByName::translateHeaders(const QString &new_headers, const QString &splitter)
 {
-  QStringList New_Headers_List = New_Headers.split(QRegExp(Splitter));
+  QStringList new_headers_list = new_headers.split(QRegExp(splitter));
 
   for(int column = 0; column < Model->columnCount(); column++)
   {
-    QString new_hdr = New_Headers_List.front();
-    New_Headers_List.removeFirst();
+    QString new_hdr = new_headers_list.front();
+    new_headers_list.removeFirst();
     Model->setHeaderData(column, Qt::Horizontal, new_hdr);
   }
 }

@@ -1,22 +1,22 @@
 #include <QDir>
 
-#include "QFileName.h"
+#include "qFileName.h"
 
 
 static const QString c_Qt_Separator("/");
 
 
-QFileName::QFileName()
+qFileName::qFileName()
 {
 }
 
 
-QFileName::QFileName(const QString &file_name): QString(file_name)
+qFileName::qFileName(const QString &file_name): QString(file_name)
 {
 }
 
 
-QFileName::QFileName(const QString &file_path, const QString &file_name):
+qFileName::qFileName(const QString &file_path, const QString &file_name):
   QString(file_path)
 {
   append(c_Qt_Separator);
@@ -24,7 +24,7 @@ QFileName::QFileName(const QString &file_path, const QString &file_name):
 }
 
 
-void QFileName::Set(const QString &file_path, const QString &file_name)
+void qFileName::set(const QString &file_path, const QString &file_name)
 {
   clear();
   append(file_path);
@@ -33,14 +33,14 @@ void QFileName::Set(const QString &file_path, const QString &file_name)
 }
 
 
-const QFileName QFileName::operator <<(const QString &file_name) const
+const qFileName qFileName::operator <<(const QString &file_name) const
 {
-  QFileName fn(*this, file_name);
+  qFileName fn(*this, file_name);
   return(fn);
 }
 
 
-const QFileName &QFileName::operator <<=(const QString &file_name)
+const qFileName &qFileName::operator <<=(const QString &file_name)
 {
   append(c_Qt_Separator);
   append(file_name);
@@ -48,13 +48,13 @@ const QFileName &QFileName::operator <<=(const QString &file_name)
 }
 
 
-QFileName QFileName::baseName() const
+qFileName qFileName::baseName() const
 {
   return(QFileInfo(*this).baseName());
 }
 
 
-QFileName QFileName::fileName() const
+qFileName qFileName::fileName() const
 {
   return(QFileInfo(*this).fileName());
 }

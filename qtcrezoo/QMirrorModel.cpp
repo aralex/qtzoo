@@ -1,9 +1,9 @@
-#include "QMirrorModel.h"
+#include "qMirrorModel.h"
 
 #include <QDebug>
 
 
-void QMirrorModel::dub(const QModelIndex &topLeft, const QModelIndex &bottomRight)
+void qMirrorModel::dub(const QModelIndex &topLeft, const QModelIndex &bottomRight)
 {
   for(int r = topLeft.row(); r <= bottomRight.row(); ++r)
   {
@@ -19,38 +19,38 @@ void QMirrorModel::dub(const QModelIndex &topLeft, const QModelIndex &bottomRigh
 }
 
 
-void QMirrorModel::dub(const QModelIndex &topLeft, const QModelIndex &bottomRight, const QVector<int> &roles)
+void qMirrorModel::dub(const QModelIndex &topLeft, const QModelIndex &bottomRight, const QVector<int> &roles)
 {
   if(roles.contains(Qt::DisplayRole))
     dub(topLeft, bottomRight);
 }
 
 
-void QMirrorModel::on_columnsInserted(const QModelIndex &parent, int first, int last)
+void qMirrorModel::on_columnsInserted(const QModelIndex &parent, int first, int last)
 {
   qDebug() << "QMirrorModel::on_columnsInserted";
   recreate();
 }
 
-void QMirrorModel::on_columnsMoved(const QModelIndex &parent, int start, int end, const QModelIndex &destination, int column)
+void qMirrorModel::on_columnsMoved(const QModelIndex &parent, int start, int end, const QModelIndex &destination, int column)
 {
   qDebug() << "QMirrorModel::on_columnsMoved";
   recreate();
 }
 
-void QMirrorModel::on_columnsRemoved(const QModelIndex &parent, int first, int last)
+void qMirrorModel::on_columnsRemoved(const QModelIndex &parent, int first, int last)
 {
   qDebug() << "QMirrorModel::on_columnsRemoved";
   recreate();
 }
 
-void QMirrorModel::on_dataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight, const QVector<int> &roles)
+void qMirrorModel::on_dataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight, const QVector<int> &roles)
 {
   qDebug() << "QMirrorModel::on_dataChanged";
   dub(topLeft, bottomRight, roles);
 }
 
-void QMirrorModel::on_headerDataChanged(Qt::Orientation orientation, int first, int last)
+void qMirrorModel::on_headerDataChanged(Qt::Orientation orientation, int first, int last)
 {
   qDebug() << "QMirrorModel::on_headerDataChanged";
   for(int i = first; i <= last; ++i)
@@ -62,32 +62,32 @@ void QMirrorModel::on_headerDataChanged(Qt::Orientation orientation, int first, 
   }
 }
 
-void QMirrorModel::on_modelReset()
+void qMirrorModel::on_modelReset()
 {
   qDebug() << "QMirrorModel::on_modelReset";
   recreate();
 }
 
-void QMirrorModel::on_rowsInserted(const QModelIndex &parent, int first, int last)
+void qMirrorModel::on_rowsInserted(const QModelIndex &parent, int first, int last)
 {
   qDebug() << "QMirrorModel::on_rowsInserted";
   recreate();
 }
 
-void QMirrorModel::on_rowsMoved(const QModelIndex &parent, int start, int end, const QModelIndex &destination, int row)
+void qMirrorModel::on_rowsMoved(const QModelIndex &parent, int start, int end, const QModelIndex &destination, int row)
 {
   qDebug() << "QMirrorModel::on_rowsMoved";
   recreate();
 }
 
-void QMirrorModel::on_rowsRemoved(const QModelIndex &parent, int first, int last)
+void qMirrorModel::on_rowsRemoved(const QModelIndex &parent, int first, int last)
 {
   qDebug() << "QMirrorModel::on_rowsRemoved";
   recreate();
 }
 
 
-QMirrorModel::QMirrorModel(const QAbstractItemModel *src_mdl, QObject *parent):
+qMirrorModel::qMirrorModel(const QAbstractItemModel *src_mdl, QObject *parent):
   srcModel(src_mdl),
   QStandardItemModel(parent)
 {
@@ -109,7 +109,7 @@ QMirrorModel::QMirrorModel(const QAbstractItemModel *src_mdl, QObject *parent):
 }
 
 
-void QMirrorModel::recreate()
+void qMirrorModel::recreate()
 {
   clear();
 

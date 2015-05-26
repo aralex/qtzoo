@@ -6,23 +6,23 @@
 #include <QAbstractItemModel>
 
 
-class QColumnByName
+class qColumnByName
 {
   private:
     QMap<QString, int> Column_Number;
     QAbstractItemModel * Model;
 
   protected:
-    void Set_Column_Number(const QString& col_name, int column);
+    void setColumnNumber(const QString& col_name, int column);
 
   public:
-    explicit QColumnByName(QAbstractItemModel * mdl);
+    explicit qColumnByName(QAbstractItemModel * mdl);
 
-    int Get_Column_Number(const QString& col_name) const;
+    int getColumnNumber(const QString& col_name) const;
 
-    QVariant Get_Data(int row, const QString& col_name, Qt::ItemDataRole role = Qt::DisplayRole) const;
+    QVariant getData(int row, const QString& col_name, Qt::ItemDataRole role = Qt::DisplayRole) const;
 
-    void Translate_Headers(const QString& New_Headers, const QString& Splitter = ",");
+    void translateHeaders(const QString& new_headers, const QString& splitter = ",");
 
 };
 

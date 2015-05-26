@@ -2,13 +2,11 @@
 #define Q_CHECKBOX_FILTER_MODEL_H
 
 #include <QSortFilterProxyModel>
-#include <QBitArray>
-#include <QItemSelection>
 
-#include <QShadowDataModel.h>
+#include <qShadowDataModel.h>
 
 
-class QCheckboxFilterModel : public QSortFilterProxyModel
+class qCheckboxFilterModel : public QSortFilterProxyModel
 {
     Q_OBJECT
 
@@ -48,7 +46,7 @@ class QCheckboxFilterModel : public QSortFilterProxyModel
 
 
   public:
-    QCheckboxFilterModel(QAbstractItemModel* src_mdl, int visible_col, int id_col, QObject *parent = 0);
+    qCheckboxFilterModel(QAbstractItemModel* src_mdl, int visible_col, int id_col, QObject *parent = 0);
 
     void setup(void);
 
@@ -56,7 +54,7 @@ class QCheckboxFilterModel : public QSortFilterProxyModel
 
     void toggleItems(bool checked, const QString &vals, bool locked);
 
-    void toggleAllItems(bool checkable, bool checked, bool locked);
+    void toggleAllItems(bool checkable, bool checked, bool locked, bool change_disabled = true);
 
     void toggleItemsReferenced(bool checked, const QString& ids, bool locked, int column);
 
@@ -67,90 +65,19 @@ class QCheckboxFilterModel : public QSortFilterProxyModel
       return isItemChecked(actualItem(row));
     }
 
+    bool isCheckboxesVisible(void) const { return ShowCheckboxes; }
+
     QString sourceItemData(int row, int column, int role) const;
-
-};
-
-#endif // Q_CHECKBOX_FILTER_MODEL_H
-
-
-/*
- *
-    int Service_Column;
-    bool ShowUnchecked;
-    QList<int> strToIntList(const QString& str) const;
-
-    QMap<QString, bool> rangeToMap(const QItemSelection& range, int column) const;
-
-
-
-    void createServiceColumn();
-
-    int serviceColumn(){ return Service_Column; }
 
     void setPattern(const QString& pat){ Pattern = pat; }
 
-    void setShowCheckboxes(bool checkable);
-    void setShowUnchecked(bool state);
+    int visibleItemsCount(void) const;
 
-    void setChecked(int state, const QMap<QString, bool>& vals);
-    void resetChecked(int state, const QMap<QString, bool>& vals);
+    bool areAllChecked(void) const { return (visibleItemsCount() == srcModel.rowCount()); }
 
-    void setChecked(int state, const QString &vals = QString());
-    void resetChecked(int state, const QString &vals = QString());
-
-    void setFixed(bool fixed);
-    void setCheckedAndFixed(int checked, bool fixed, int column, const QString &vals);
-
-    void check_all(void);
-    void uncheck_all(void);
-
-    //void setShowUncheckedCheckboxes(bool state);
-    void hideCheckboxes(void);
-
-    //void setMode(bool checkboxes, bool show_unchecked, const QMap<QString, bool> &vals);
-    //void setMode(bool checkboxes, bool show_unchecked, const QString &vals);
-    //void setMode(bool checkboxes, bool show_unchecked, bool enabled);
-
-    void Brush(const QBrush& brush, int column, const QString& val);
-
-    Qt::CheckState generalCheckState(void) const;
+    Qt::CheckState genericCheckState(void) const;
 
     QString getCheckedIds(void) const;
+};
 
-    QString getEnabledCheckedIds(void) const;
-
-    void showAllItems(void);
-
-    void hideAllItems(void);
-
-    void toggleVisibility(bool visible, const QString& vals);
-    void toggleVisibilityReferenced(bool visible, const QMap<QString, bool> &ids, int column);
-    void toggleVisibilityReferenced(bool visible, const QString& vals, int column);
-    void toggleVisibilityReferenced(bool visible, const QItemSelection& range, int column);
-
-    void showTheseItems(const QString& vals){ toggleVisibility(true, vals); }
-    void hideTheseItems(const QString& vals){ toggleVisibility(false, vals); }
-
-    void showTheseReferencedItems(const QString& vals, int column){ toggleVisibilityReferenced(true, vals, column); }
-    void showTheseItemsOnly(const QString& vals);
-
-
-    void brush(const QBrush& brush, const QString& val, int column);
-
-    bool isItemChecked(int row) const;
-    //bool isItemVisible(int src_row) const;
-
-    //int visibleItemsCount(void){ return visibleItems.count(); }
-
-    const QAbstractItemModel* getSrcModel() const { return &srcModel; }
-    void hideUnchecked();
-
-  signals:
-
-  public slots:
-    void on_srcModel_recreated(void);
-
-    void on_srcModel_dataChanged(const QModelIndex& topLeft, const QModelIndex& bottomRight, const QVector<int>& roles);
-
-*/
+#endif // Q_CHECKBOX_FILTER_MODEL_H

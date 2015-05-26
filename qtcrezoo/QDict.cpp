@@ -4,24 +4,24 @@
 #include <QStringList>
 #include <QDebug>
 
-#include "QDict.h"
-#include "QTextFile.h"
+#include "qDict.h"
+#include "qTextFile.h"
 
 
-QDict::QDict(const QString &delim, const QString &file_name):
+qDict::qDict(const QString &delim, const QString &file_name):
   Delimeter(delim)
 {
   if(!file_name.isNull())
-    Load(file_name);
+    load(file_name);
 }
 
 
-void QDict::Load(const QString &file_name, const QString& delim)
+void qDict::load(const QString &file_name, const QString& delim)
 {
   if((Delimeter != delim) && (delim != q_DEFAULT_DELIMETER))
     Delimeter = delim;
 
-  QTextFile f(file_name);
+  qTextFile f(file_name);
   QString s;
   QStringList pairs;
 
@@ -39,7 +39,7 @@ void QDict::Load(const QString &file_name, const QString& delim)
 }
 
 
-void QDict::Save(const QString &file_name) const
+void qDict::save(const QString &file_name) const
 {
   QFile f(file_name);
 

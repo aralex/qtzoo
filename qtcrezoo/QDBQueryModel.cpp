@@ -6,27 +6,27 @@
 
 #include <QMessageBox>
 
-#include "QDBQueryModel.h"
-#include "QCSString.h"
+#include "qDBQueryModel.h"
+#include "qCSString.h"
 
 
 QSemaphore DB_Sem(1);
 
 
-void QDBQueryModel::prepare_query(QSqlQuery& query)
+void qDBQueryModel::prepare_query(QSqlQuery& query)
 {
   query.prepare(Query_Str);
 }
 
 
-void QDBQueryModel::getData(QString New_Query_Str)
+void qDBQueryModel::getData(QString New_Query_Str)
 {
   Query_Str = New_Query_Str;
   getData();
 }
 
 
-QString QDBQueryModel::Get_SP_Name() const
+QString qDBQueryModel::getSPName() const
 {
   QRegExp pat_exec("EXEC\\sdbo\\.(\\w+)", Qt::CaseInsensitive);
 
@@ -43,7 +43,7 @@ QString QDBQueryModel::Get_SP_Name() const
 }
 
 
-void QDBQueryModel::Get_Column_Names(const QSqlRecord &rec)
+void qDBQueryModel::getColumnNames(const QSqlRecord &rec)
 {
   int columns = rec.count();
 
@@ -53,13 +53,13 @@ void QDBQueryModel::Get_Column_Names(const QSqlRecord &rec)
   {
     const QString& col_name = rec.fieldName(col);
     setHeaderData(col, Qt::Horizontal, col_name);
-    Set_Column_Number(col_name, col);
+    setColumnNumber(col_name, col);
     // qDebug() << "col_name" << col_name << headerData(col, Qt::Horizontal);
   }
 }
 
 
-QString QDBQueryModel::Unquote(const QString &str) const
+QString qDBQueryModel::unquote(const QString &str) const
 {
   QString s = ((str[0] == '"') && (str[str.size() - 1] == '"'))? str.mid(1, str.size() - 2): str;
   qDebug() << "Unquoted" << s;
@@ -67,7 +67,7 @@ QString QDBQueryModel::Unquote(const QString &str) const
 }
 
 
-QVariant QDBQueryModel::headerData(int section, Qt::Orientation orientation, int role) const
+QVariant qDBQueryModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
   QVariant res = (orientation == Qt::Vertical)?
      section:
@@ -77,7 +77,7 @@ QVariant QDBQueryModel::headerData(int section, Qt::Orientation orientation, int
 }
 
 
-void QDBQueryModel::Load(const QString &fname)
+void qDBQueryModel::load(const QString &fname)
 {
   QFile f(fname);
   if(!f.open(QIODevice::ReadOnly))
@@ -103,13 +103,13 @@ void QDBQueryModel::Load(const QString &fname)
 
     if(first)
     {
-      header_str = Unquote(s);
+      header_str = unquote(s);
       first = false;
     }
     else
     {
       for(int col = 0; col < l.size(); col++)
-        items << new QStandardItem(Unquote(l[col].trimmed()));
+        items << new QStandardItem(unquote(l[col].trimmed()));
 
       appendRow(items);
       items.clear();
@@ -121,14 +121,14 @@ void QDBQueryModel::Load(const QString &fname)
   {
     QString col_name = l[col].trimmed();
     setHeaderData(col, Qt::Horizontal, col_name);
-    Set_Column_Number(col_name, col);
+    setColumnNumber(col_name, col);
   }
 
   f.close();
 }
 
 
-void QDBQueryModel::Save(const QString &fname) const
+void qDBQueryModel::save(const QString &fname) const
 {
   QFile f(fname);
   if(!f.open(QIODevice::WriteOnly))
@@ -137,7 +137,7 @@ void QDBQueryModel::Save(const QString &fname) const
     return;
   }
 
-  QCSString s;
+  qCSString s;
 
   for(int col = 0; col < columnCount(); col++)
     s.append(headerData(col, Qt::Horizontal).toString());
@@ -160,7 +160,7 @@ void QDBQueryModel::Save(const QString &fname) const
 }
 
 
-void QDBQueryModel::getData(void)
+void qDBQueryModel::getData(void)
 {
   int row;
 
@@ -199,7 +199,7 @@ void QDBQueryModel::getData(void)
       // Получаем имена столбцов, если данных нет.
       //qDebug() << "No data returned!";
       QSqlRecord rec = query.record();
-      Get_Column_Names(rec);
+      getColumnNames(rec);
     }
     else
     {
@@ -215,7 +215,7 @@ void QDBQueryModel::getData(void)
         QSqlRecord rec = query.record();
 
         // При обработке первой строки, получаем имена столбцов.
-        if(!row) Get_Column_Names(rec);
+        if(!row) getColumnNames(rec);
 
         for(int col = 0; col < rec.count(); col++)
         {
@@ -251,7 +251,7 @@ void QDBQueryModel::getData(void)
 }
 
 
-void QDBQueryModel::update(void)
+void qDBQueryModel::update(void)
 {
   //qDebug() << "QDBQueryModel::update";
   getData();
