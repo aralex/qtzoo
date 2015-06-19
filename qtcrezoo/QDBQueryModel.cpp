@@ -162,15 +162,12 @@ void qDBQueryModel::save(const QString &fname) const
 
 void qDBQueryModel::getData(void)
 {
-  int row;
-
-  //qDebug() << "QDBQueryModel::getData" << Query_Str;
+  qDebug() << "QDBQueryModel::getData" << Query_Str;
 
 #ifdef QUERY_RESULT_LOAD
-
   Load(Get_SP_Name() + ".csv");
-
 #else
+
 
   clear();
 
@@ -192,45 +189,45 @@ void qDBQueryModel::getData(void)
       break;
     }
 
-    //qDebug() << "Query_Str" << Query_Str;
+    qDebug() << "Query_Str" << Query_Str;
 
-    if(!query.first())
+    if(query.isSelect())
     {
-      // Получаем имена столбцов, если данных нет.
-      //qDebug() << "No data returned!";
-      QSqlRecord rec = query.record();
-      getColumnNames(rec);
-    }
-    else
-    {
-      // Получаем данные и имена столбцов.
-      QList<QStandardItem *> items;
-      QStandardItem* item = NULL;
-
-      //qDebug() << "Returned some records.";
-
-      row = 0;
-      do
+      if(query.size())
       {
-        QSqlRecord rec = query.record();
+        // Получаем данные и имена столбцов.
+        QList<QStandardItem *> items;
+        QStandardItem* item = NULL;
 
-        // При обработке первой строки, получаем имена столбцов.
-        if(!row) getColumnNames(rec);
-
-        for(int col = 0; col < rec.count(); col++)
+        for(int row = 0; (row? query.next(): query.first()); ++row)
         {
-          item = rec.value(col).isNull()? new QStandardItem: new QStandardItem(rec.value(col).toString());
-          items << item;
+          QSqlRecord rec = query.record();
+
+          // При обработке первой строки, получаем имена столбцов.
+          if(!row) getColumnNames(rec);
+
+          for(int col = 0; col < rec.count(); col++)
+          {
+            QString value = rec.value(col).toString();
+            item = rec.value(col).isNull()? new QStandardItem: new QStandardItem(value);
+
+            //qDebug() << QString("%0; %1; %2").arg(row).arg(col).arg(value);
+
+            items << item;
+          }
+
+          insertRow(row, items);
+          items.clear();
         }
-
-        insertRow(row++, items);
-        items.clear();
-
-      } while(query.next());
+      }
+      else
+      {
+        // Получаем имена столбцов, если данных нет.
+        qDebug() << "No data returned!";
+        QSqlRecord rec = query.record();
+        getColumnNames(rec);
+      }
     }
-
-    emit sig_data_loaded();
-
   } while(false);
 
 
@@ -240,14 +237,12 @@ void qDBQueryModel::getData(void)
 
 
 #ifdef QUERY_RESULT_SAVE
-
   Save(Get_SP_Name() + ".csv");
-
 #endif
 
   b_error = false;
 
-  emit dataChanged(index(0, 0), index(rowCount() - 1, columnCount() - 1));
+  emit sig_data_loaded();
 }
 
 

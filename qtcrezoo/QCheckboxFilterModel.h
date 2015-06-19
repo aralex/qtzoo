@@ -3,7 +3,7 @@
 
 #include <QSortFilterProxyModel>
 
-#include <qShadowDataModel.h>
+#include "qMirrorModel.h"
 
 
 class qCheckboxFilterModel : public QSortFilterProxyModel
@@ -11,7 +11,7 @@ class qCheckboxFilterModel : public QSortFilterProxyModel
     Q_OBJECT
 
   protected:
-    QShadowDataModel srcModel;
+    qMirrorModel srcModel;
     QString Pattern;
 
     bool ShowCheckboxes;
@@ -30,54 +30,48 @@ class qCheckboxFilterModel : public QSortFilterProxyModel
 
     QMap<QString, bool> strToMap(const QString& str) const;
 
-    QStandardItem* actualItem(int row) const
-    {
-      return srcModel.item(row, Checkboxed_Column);
-    }
+    QStandardItem* actualSrcItem(int source_row) const;
 
-    QString actualItemId(QStandardItem* item) const
-    {
-      return item? item->data(Qt::UserRole).toString(): QString();
-    }
+    void setSrcItemState(int source_row, bool checked, bool locked, QStandardItem* actual_item = NULL);
 
-    bool isItemChecked(QStandardItem* item) const;
-
-    void setItemState(QStandardItem *item, bool checked, bool locked);
+    int sourceRow(int row) const;
 
 
   public:
     qCheckboxFilterModel(QAbstractItemModel* src_mdl, int visible_col, int id_col, QObject *parent = 0);
 
-    void setup(void);
-
     void setShowCheckboxes(bool checkable);
 
-    void toggleItems(bool checked, const QString &vals, bool locked);
+    void toggleItems(bool checked, const QString &vals, bool locked = false);
 
-    void toggleAllItems(bool checkable, bool checked, bool locked, bool change_disabled = true);
+    void toggleAllItems(bool checkable, bool checked, bool locked = false, bool change_disabled = true);
 
-    void toggleItemsReferenced(bool checked, const QString& ids, bool locked, int column);
+    void toggleItemsReferenced(bool checked, const QString& ids_str, bool locked, int column);
 
     void brush(const QBrush& brush, const QString& val, int column);
 
-    bool isItemChecked(int row) const
-    {
-      return isItemChecked(actualItem(row));
-    }
+    bool isSrcItemChecked(int source_row) const;
+
+    bool isItemChecked(int row) const;
 
     bool isCheckboxesVisible(void) const { return ShowCheckboxes; }
-
-    QString sourceItemData(int row, int column, int role) const;
 
     void setPattern(const QString& pat){ Pattern = pat; }
 
     int visibleItemsCount(void) const;
 
-    bool areAllChecked(void) const { return (visibleItemsCount() == srcModel.rowCount()); }
-
-    Qt::CheckState genericCheckState(void) const;
+    Qt::CheckState generalCheckState(void) const;
 
     QString getCheckedIds(void) const;
+
+    QString getEnabledCheckedIds(void) const;
+
+    QString getSrcId(int source_row) const;
+
+    QString getId(int row) const;
+
+  signals:
+    void sourceDataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight, const QVector<int> &roles = QVector<int>());
 };
 
 #endif // Q_CHECKBOX_FILTER_MODEL_H

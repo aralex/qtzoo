@@ -37,6 +37,8 @@ class TestChBFiltMainWindow : public QMainWindow
 
     void on_lvProdKinds_selection_changed(const QItemSelection &selected, const QItemSelection &deselected);
 
+    void on_ProdKinds_source_changed(const QModelIndex & topLeft, const QModelIndex & bottomRight, const QVector<int> & roles = QVector<int>());
+
     void on_mdlDiets_selection_changed(const QItemSelection &selected, const QItemSelection &deselected);
 
     void on_lvDiets_doubleClicked(const QModelIndex &index);
@@ -46,6 +48,8 @@ class TestChBFiltMainWindow : public QMainWindow
     void on_chbProdKinds_pressed();
 
     void on_chbProducts_pressed();
+
+    void on_btnOk_clicked();
 
   private:
     Ui::TestChBFiltMainWindow *ui;
@@ -61,8 +65,8 @@ class TestChBFiltMainWindow : public QMainWindow
     qSpyModel* mdlSpy1;
     qSpyModel* mdlSpy2;
 
-    bool buttonCancelClicked;
     bool FreezeRefs;
+    int currentDietRow;
 
     QString SelectedProdKinds;
     QString SelectedProducts;

@@ -26,19 +26,30 @@ void qMirrorModel::dub(const QModelIndex &topLeft, const QModelIndex &bottomRigh
 }
 
 
-void qMirrorModel::on_columnsInserted(const QModelIndex &parent, int first, int last)
+void qMirrorModel::on_columnsInserted(const QModelIndex &/*parent*/, int first, int last)
 {
-  qDebug() << "QMirrorModel::on_columnsInserted";
-  recreate();
+  qDebug() << "QMirrorModel::on_columnsInserted" << first << last;
+
+  QList<QStandardItem*> L;
+
+  for(int i = first; i <= last; ++i) if(srcModel->rowCount())
+  {
+    for(int row = 0; row < srcModel->rowCount(); ++row)
+      L << new QStandardItem(srcModel->index(row, i).data().toString());
+
+    insertColumn(i, L);
+    L.clear();
+  }
 }
 
-void qMirrorModel::on_columnsMoved(const QModelIndex &parent, int start, int end, const QModelIndex &destination, int column)
+
+void qMirrorModel::on_columnsMoved(const QModelIndex &/*parent*/, int /*start*/, int /*end*/, const QModelIndex &/*destination*/, int /*column*/)
 {
   qDebug() << "QMirrorModel::on_columnsMoved";
   recreate();
 }
 
-void qMirrorModel::on_columnsRemoved(const QModelIndex &parent, int first, int last)
+void qMirrorModel::on_columnsRemoved(const QModelIndex &/*parent*/, int /*first*/, int /*last*/)
 {
   qDebug() << "QMirrorModel::on_columnsRemoved";
   recreate();
@@ -65,22 +76,34 @@ void qMirrorModel::on_headerDataChanged(Qt::Orientation orientation, int first, 
 void qMirrorModel::on_modelReset()
 {
   qDebug() << "QMirrorModel::on_modelReset";
-  recreate();
+  clear();
 }
 
-void qMirrorModel::on_rowsInserted(const QModelIndex &parent, int first, int last)
+
+void qMirrorModel::on_rowsInserted(const QModelIndex &/*parent*/, int first, int last)
 {
-  qDebug() << "QMirrorModel::on_rowsInserted";
-  recreate();
+  qDebug() << "QMirrorModel::on_rowsInserted" << first << last;
+
+  QList<QStandardItem*> L;
+
+  for(int i = first; i <= last; ++i) if(srcModel->columnCount())
+  {
+    for(int col = 0; col < srcModel->columnCount(); ++col)
+      L << new QStandardItem(srcModel->index(i, col).data().toString());
+
+    insertRow(i, L);
+    L.clear();
+  }
 }
 
-void qMirrorModel::on_rowsMoved(const QModelIndex &parent, int start, int end, const QModelIndex &destination, int row)
+
+void qMirrorModel::on_rowsMoved(const QModelIndex &/*parent*/, int /*start*/, int /*end*/, const QModelIndex &/*destination*/, int /*row*/)
 {
   qDebug() << "QMirrorModel::on_rowsMoved";
   recreate();
 }
 
-void qMirrorModel::on_rowsRemoved(const QModelIndex &parent, int first, int last)
+void qMirrorModel::on_rowsRemoved(const QModelIndex &/*parent*/, int /*first*/, int /*last*/)
 {
   qDebug() << "QMirrorModel::on_rowsRemoved";
   recreate();
